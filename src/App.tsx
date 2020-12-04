@@ -1,7 +1,33 @@
 import { Home, Login, Register, Create } from './views'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Progress } from './components'
+import { debounce } from './utils/debounce'
 
-export default function App() {
+function App(props: RouteComponentProps) {
+  let time = useRef<NodeJS.Timeout>()
+  const [flag, setFlag] = useState<boolean>(false)
+
+  useEffect(() => {
+    /* 监听路由的变化 */
+    props.history.listen(() => {
+      /*页面回到顶部 */
+      if (document.body.scrollTop || document.documentElement.scrollTop > 0) {
+        window.scrollTo(0, 0)
+      }
+      /* 进度条控制 */
+      debounce(() => {
+        setFlag(true)
+        time.current = setTimeout(() => {
+          setFlag(false)
+          if (time.current !== undefined) {
+            clearTimeout(time.current)
+          }
+        }, 900)
+      }, 150)()
+    })
+  }, [props.history])
+
   return (
     <>
       <Switch>
@@ -27,6 +53,8 @@ export default function App() {
           <Redirect to="/notFound"></Redirect>
         </Route>
       </Switch>
+      <Progress flag={flag} />
     </>
   )
 }
+export default withRouter(App)

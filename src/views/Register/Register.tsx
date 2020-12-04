@@ -1,7 +1,8 @@
 import './Register.less'
 import { Button, List, InputItem, Radio } from 'antd-mobile'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
+import request from '../../utils/request'
 
 const Register = (props: RouteComponentProps) => {
   const { email: pEmail } = props.match.params as { email: string }
@@ -9,6 +10,22 @@ const Register = (props: RouteComponentProps) => {
   const [email, setEmail] = useState(pEmail)
   const [text, setText] = useState('')
   const [checked, setChecked] = useState(true)
+
+  useEffect(() => {
+    getCaptcha()
+    return () => {}
+  }, [])
+
+  const getCaptcha = () => {
+    request
+      .get<any, { svg: string }>('/app/captcha')
+      .then((data) => {
+        if (data) {
+          setSvg(data.svg)
+        }
+      })
+      .catch()
+  }
   return (
     <div className="container">
       <div className="heart register-content">

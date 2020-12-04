@@ -5,6 +5,7 @@ import { CloseOutlined, EyeOutlined, EyeInvisibleOutlined, UserOutlined } from '
 import { Button, Modal } from 'antd-mobile'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import request from '../../utils/request'
 
 const Login = () => {
   const [text, setText] = useState('')
@@ -77,10 +78,7 @@ const Login = () => {
             loading={loading}
             onClick={() => {
               setLoading(true)
-              setTimeout(() => {
-                // 登录失败
-                Modal.alert('登录失败', '账号或密码错误,请重新输入', [{ text: 'OK', onPress: () => setLoading(false) }])
-              }, 3000)
+              request.post<any, {}>('/login', { email: text, password: pwd })
             }}
           >
             登录
