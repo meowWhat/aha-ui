@@ -11,6 +11,9 @@
     height: 80%;
     width: 80%;
     display: grid;
+    grid-template-rows: 85px 130px 25% auto;
+    grid-template-columns: 100%;
+
     .header {
       margin: 0 auto;
       display: flex;
@@ -25,6 +28,43 @@
       .header-logo {
         flex: 1;
         height: 100%;
+      }
+    }
+    .form {
+      display: grid;
+      grid-template-rows: 40px 40px;
+      row-gap: 10px;
+      justify-items: center;
+
+      .form-surround {
+        background-color: #f2f2f2;
+        border: none;
+        border-radius: 20px;
+        display: grid;
+        grid-template-columns: 40px auto 40px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+
+        .form-input {
+          font-size: 18px;
+          background-color: #f2f2f2;
+          border: none;
+          text-align: center;
+        }
+      }
+    }
+    .footer {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      a {
+        text-align: center;
+        height: 25px;
+        line-height: 25px;
+        color: #333;
+      }
+      a:nth-child(n + 2) {
+        border-left: 1px solid #ddd;
       }
     }
   }

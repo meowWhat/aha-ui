@@ -3,7 +3,7 @@ import { useState } from 'react'
 import * as urls from '../../img'
 import './Home.less'
 
-export const Home = () => {
+const Home = () => {
   const [tab, setTab] = useState('message')
 
   const getIcon = (iconName: string) => {
@@ -70,3 +70,5 @@ export const Home = () => {
     </div>
   )
 }
+
+export default Home
