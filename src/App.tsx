@@ -1,8 +1,8 @@
-import { Home, Login, Register, Create } from './views'
+import { Home, Login, Register, Create, NotFound } from './views'
 import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { Progress } from './components'
-import { debounce } from './utils/debounce'
+import { debounce } from './utils'
 
 function App(props: RouteComponentProps) {
   let time = useRef<NodeJS.Timeout>()
@@ -40,14 +40,14 @@ function App(props: RouteComponentProps) {
         <Route path="/register" exact>
           <Register></Register>
         </Route>
-        <Route path="/register/:email" exact>
-          <Register></Register>
-        </Route>
-        <Route path="/create/:email" exact>
+        <Route path="/create" exact>
           <Create></Create>
         </Route>
+        <Route path="/notFound" exact>
+          <NotFound></NotFound>
+        </Route>
         <Route path="/" exact>
-          <Redirect to="/login"></Redirect>
+          <Redirect to="/home"></Redirect>
         </Route>
         <Route>
           <Redirect to="/notFound"></Redirect>

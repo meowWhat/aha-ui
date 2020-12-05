@@ -10,7 +10,8 @@ import './Loading.less'
 interface Loading {
   flag: boolean | null
 }
-const Loading = (props: Loading) => {
+
+const Noodles = (props: Loading) => {
   const { flag } = props
   const getClssName = () => {
     let className = 'progress'
@@ -24,4 +25,4 @@ const Loading = (props: Loading) => {
   return <div className={getClssName()}></div>
 }
 
-export default Loading
+export default Noodles

@@ -8,6 +8,7 @@ const service = axios.create({
   baseURL: process.env.REACT_APP_BASE_API,
   // 超时
   timeout: 10000,
+  withCredentials: true,
 })
 // request拦截器
 service.interceptors.request.use(
@@ -45,19 +46,11 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (res) => {
-    const code = res.data.statusCode || 200
-    const msg = res.data.message
-
-    if (code !== 200) {
-      Modal.alert('', msg)
-      return Promise.reject(msg)
-    } else {
-      return res.data
-    }
+    return res.data
   },
   (error) => {
     let { message } = error
-    if (message == 'Network Error') {
+    if (message === 'Network Error') {
       message = '后端接口连接异常'
     } else if (message.includes('timeout')) {
       message = '系统接口请求超时'

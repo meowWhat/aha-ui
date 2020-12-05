@@ -4,14 +4,17 @@ import title from '../../img/title.jpg'
 import { CloseOutlined, EyeOutlined, EyeInvisibleOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Modal } from 'antd-mobile'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import request from '../../utils/request'
+import { Link, RouteComponentProps } from 'react-router-dom'
+import { Req } from 'src/type'
+import { withRouter } from 'react-router-dom'
+import { service, validate } from 'src/utils'
 
-const Login = () => {
+const Login = (props: RouteComponentProps) => {
   const [text, setText] = useState('')
   const [pwd, setPwd] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
+
   return (
     <div id="login">
       <div className="content container">
@@ -77,8 +80,26 @@ const Login = () => {
           <Button
             loading={loading}
             onClick={() => {
+              if (!validate.isEmail(text)) {
+                return Modal.alert('', '邮箱格式错误,请重新输入!')
+              }
+              if (!validate.isString(pwd, 6)) {
+                return Modal.alert('', '密码格式错误,长度不得低于6位!')
+              }
               setLoading(true)
-              request.post<any, {}>('/login', { email: text, password: pwd })
+              service
+                .post<any, Req>('/login', { email: text, password: pwd })
+                .then((res) => {
+                  setLoading(false)
+                  if (res && res.statusCode === 200) {
+                    props.history.push('/home')
+                  } else {
+                    Modal.alert('', '用户名或密码不正确,请重新输入!')
+                  }
+                })
+                .catch(() => {
+                  setLoading(false)
+                })
             }}
           >
             登录
@@ -86,12 +107,32 @@ const Login = () => {
         </div>
         {/* 密码找回/注册  */}
         <footer className="footer">
-          <Link to="/forget">找回密码</Link>
-          <Link to="/register">新用户注册</Link>
+          <Link
+            to={{
+              pathname: '/register',
+              state: {
+                isCreate: false,
+                email: '',
+              },
+            }}
+          >
+            找回密码
+          </Link>
+          <Link
+            to={{
+              pathname: '/register',
+              state: {
+                isCreate: true,
+                email: '',
+              },
+            }}
+          >
+            新用户注册
+          </Link>
         </footer>
       </div>
     </div>
   )
 }
 
-export default Login
+export default withRouter(Login)

@@ -1,9 +1,11 @@
-import { TabBar } from 'antd-mobile'
-import { useState } from 'react'
+import { Modal, TabBar } from 'antd-mobile'
+import { useEffect, useState } from 'react'
 import * as urls from '../../img'
 import './Home.less'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { isLogin } from 'src/api/login'
 
-const Home = () => {
+const Home = (props: RouteComponentProps) => {
   const [tab, setTab] = useState('message')
 
   const getIcon = (iconName: string) => {
@@ -19,6 +21,20 @@ const Home = () => {
     )
   }
 
+  useEffect(() => {
+    // isLogin().then((res) => {
+    //   if (!res) {
+    //     Modal.alert('', '您的登录状态已失效,请重新登录!', [
+    //       {
+    //         text: 'ok',
+    //         onPress: () => {
+    //           props.history.push('/login')
+    //         },
+    //       },
+    //     ])
+    //   }
+    // })
+  }, [props.history])
   return (
     <div id="home" style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
       <TabBar tabBarPosition="bottom" prerenderingSiblingsNumber={0}>
@@ -71,4 +87,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default withRouter(Home)
