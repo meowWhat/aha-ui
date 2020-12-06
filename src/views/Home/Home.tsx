@@ -1,88 +1,71 @@
-import { Modal, TabBar } from 'antd-mobile'
-import { useEffect, useState } from 'react'
-import * as urls from '../../img'
 import './Home.less'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { isLogin } from 'src/api/login'
+import { withRouter, NavLink, Route, Switch, Redirect } from 'react-router-dom'
+import {
+  CommentOutlined,
+  UsergroupAddOutlined,
+  CompassOutlined,
+  UserOutlined,
+  PlusCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
+import { ActivityIndicator } from 'antd-mobile'
+import { lazy, Suspense } from 'react'
 
-const Home = (props: RouteComponentProps) => {
-  const [tab, setTab] = useState('message')
+const Linkman = lazy(() => import('./Linkman/Linkman'))
+const Message = lazy(() => import('./Message/Message'))
+const Find = lazy(() => import('./Find/Find'))
+const Profile = lazy(() => import('./Profile/Profile'))
 
-  const getIcon = (iconName: string) => {
-    const temp: { [key: string]: string } = urls
-    return (
-      <div
-        style={{
-          width: '22px',
-          height: '22px',
-          background: `url(${temp[iconName]}) center center /  21px 21px no-repeat`,
-        }}
-      />
-    )
-  }
-
-  useEffect(() => {
-    // isLogin().then((res) => {
-    //   if (!res) {
-    //     Modal.alert('', '您的登录状态已失效,请重新登录!', [
-    //       {
-    //         text: 'ok',
-    //         onPress: () => {
-    //           props.history.push('/login')
-    //         },
-    //       },
-    //     ])
-    //   }
-    // })
-  }, [props.history])
+const Home = () => {
   return (
-    <div id="home" style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
-      <TabBar tabBarPosition="bottom" prerenderingSiblingsNumber={0}>
-        <TabBar.Item
-          title="消息"
-          icon={getIcon('message2')}
-          selectedIcon={getIcon('message')}
-          selected={tab === 'message'}
-          onPress={() => {
-            setTab('message')
-          }}
-        >
-          消息
-        </TabBar.Item>
-        <TabBar.Item
-          title="联系人"
-          icon={getIcon('lianxiren2')}
-          selectedIcon={getIcon('lianxiren')}
-          selected={tab === 'friend'}
-          onPress={() => {
-            setTab('friend')
-          }}
-        >
-          联系人
-        </TabBar.Item>
-        <TabBar.Item
-          title="动态"
-          icon={getIcon('dongtai2')}
-          selectedIcon={getIcon('dongtai')}
-          selected={tab === 'dongtai'}
-          onPress={() => {
-            setTab('dongtai')
-          }}
-        >
-          动态
-        </TabBar.Item>
-        <TabBar.Item
-          title="我的"
-          icon={getIcon('wode2')}
-          selectedIcon={getIcon('wode')}
-          selected={tab === 'wode'}
-          onPress={() => {
-            setTab('wode')
-          }}
-        >
-          我的
-        </TabBar.Item>
-      </TabBar>
+    <div id="home">
+      <header className="home-nav bgc-gray">
+        <span className="home-nav-title">aha</span>
+        <span></span>
+        <span className="home-nav-icon">
+          <SearchOutlined />
+        </span>
+        <span className="home-nav-icon">
+          <PlusCircleOutlined />
+        </span>
+      </header>
+
+      <section className="home-content">
+        <Suspense fallback={<ActivityIndicator size="large" text="正在加载" toast />}>
+          <Switch>
+            <Route path="/home/message" exact component={Message} />
+            <Route path="/home/linkman" exact component={Linkman} />
+            <Route path="/home/find" exact component={Find} />
+            <Route path="/home/profile" exact component={Profile} />
+
+            <Route path="/home" exact>
+              <Redirect to="/home/message"></Redirect>
+            </Route>
+            <Route>
+              <Redirect to="/notFound"></Redirect>
+            </Route>
+          </Switch>
+        </Suspense>
+      </section>
+
+      <div className="home-tabbar bgc-gray">
+        <NavLink activeClassName="green" to="/home/message" className="home-tabbar-item">
+          <CommentOutlined />
+          <span>消息</span>
+        </NavLink>
+        <NavLink activeClassName="green" to="/home/linkman" className="home-tabbar-item">
+          <UsergroupAddOutlined />
+          <span>通讯录</span>
+        </NavLink>
+        <NavLink activeClassName="green" to="/home/find" className="home-tabbar-item">
+          <CompassOutlined />
+          <span>发现</span>
+        </NavLink>
+        <NavLink activeClassName="green" to="/home/profile" className="home-tabbar-item">
+          <UserOutlined />
+          <span>我</span>
+        </NavLink>
+      </div>
     </div>
   )
 }

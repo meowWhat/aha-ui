@@ -1,15 +1,50 @@
 #home {
-  background-color: white;
-  height: 100%;
-  text-align: center;
-  #tab-bar.demo {
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  background-color: #fff;
+  .home-nav {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% auto 10% 15%;
+    align-items: center;
+    font-size: 18px;
+    justify-items: center;
+    position: fixed;
+    height: 49px;
+    .home-nav-title {
+      padding-left: 10px;
+    }
   }
-  #tab-bar .demoName {
-    height: 40px;
+  .home-content {
+    margin-top: 49px;
+    width: 100%;
   }
-  #tab-bar .demo-preview-item .am-tab-bar {
-    background-color: white;
+  .home-tabbar {
+    position: fixed;
+    height: 49px;
+    bottom: 0;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    align-items: center;
+    a {
+      color: #333;
+    }
+    .home-tabbar-item {
+      display: grid;
+      grid-template-rows: auto 20%;
+      row-gap: 4px;
+      justify-items: center;
+      align-items: center;
+      span {
+        font-size: 12px;
+      }
+      .anticon {
+        font-size: 24px;
+      }
+    }
   }
 }

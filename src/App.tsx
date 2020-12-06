@@ -1,8 +1,9 @@
 import { Home, Login, Register, Create, NotFound } from './views'
 import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { Progress } from './components'
 import { debounce } from './utils'
+import { ActivityIndicator } from 'antd-mobile'
 
 function App(props: RouteComponentProps) {
   let time = useRef<NodeJS.Timeout>()
@@ -29,12 +30,12 @@ function App(props: RouteComponentProps) {
   }, [props.history])
 
   return (
-    <>
+    <Suspense fallback={<ActivityIndicator size="large" text="正在加载" toast />}>
       <Switch>
         <Route path="/login" exact>
           <Login></Login>
         </Route>
-        <Route path="/home" exact>
+        <Route path="/home">
           <Home></Home>
         </Route>
         <Route path="/register" exact>
@@ -54,7 +55,7 @@ function App(props: RouteComponentProps) {
         </Route>
       </Switch>
       <Progress flag={flag} />
-    </>
+    </Suspense>
   )
 }
 export default withRouter(App)

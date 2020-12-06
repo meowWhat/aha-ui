@@ -1,9 +1,14 @@
 const path = require('path')
-const { override, addLessLoader, addWebpackAlias } = require('customize-cra')
+const { override, addLessLoader, addWebpackAlias, fixBabelImports } = require('customize-cra')
 
 module.exports = override(
-  addLessLoader(),
   addWebpackAlias({
     src: path.resolve(__dirname, 'src'),
-  })
+  }),
+  fixBabelImports('import', {
+    libraryName: 'antd-mobile',
+    libraryDirectory: 'es',
+    style: 'less',
+  }),
+  addLessLoader(),
 )
