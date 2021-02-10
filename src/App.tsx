@@ -1,4 +1,4 @@
-import { Home, Login, Register, Create, NotFound } from './views'
+import { Home, Login, Register, Create, NotFound, User } from './views'
 import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { Progress } from './components'
@@ -37,6 +37,9 @@ function App(props: RouteComponentProps) {
         </Route>
         <Route path="/home">
           <Home></Home>
+        </Route>
+        <Route path="/user">
+          <User></User>
         </Route>
         <Route path="/register" exact>
           <Register></Register>

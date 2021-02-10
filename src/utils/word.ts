@@ -320,3 +320,13 @@ export function generateBig_1() {
   str.push('#')
   return str
 }
+
+
+export const getTitleMap = () => {
+  var str = ['星标朋友']
+  for (var i = 97; i < 123; i++) {
+    str.push(String.fromCharCode(i).toUpperCase())
+  }
+  str.push('#')
+  return str
+}

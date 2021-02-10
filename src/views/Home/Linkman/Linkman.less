@@ -1,21 +1,38 @@
 .linkman {
   height: 100%;
+  background-color: #fff;
+  margin-bottom: 49px;
+  .linkman-title {
+    height: 24px;
+    background-color: #f7f7f7;
+    font-size: 14px;
+    line-height: 24px;
+    color: gray;
+    font-weight: 400;
+    padding-left: 6%;
+  }
   .linkman-item {
     height: 50px;
     font-size: 16px;
     display: grid;
     grid-template-columns: 20% auto;
     align-items: center;
+    &:active {
+      background-color: #f7f7f7;
+    }
     .linkman-item-avatar {
-      width: 75%;
-      height: 75%;
+      width: 65%;
+      height: 65%;
       margin: 0 auto;
     }
     .linkman-item-nickname {
-      height: 50px;
+      height: 48px;
       line-height: 50px;
       border-bottom: 1px solid #f7f7f7;
     }
+  }
+  .linkman-item-last > .linkman-item-nickname {
+    border-bottom: 0;
   }
   .linkman-nav {
     display: grid;
@@ -24,7 +41,10 @@
     right: 5%;
     transform: translateY(-50%);
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     width: 16px;
+    a {
+      color: #333;
+    }
   }
 }

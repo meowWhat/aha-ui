@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom'
 import 'antd-mobile/dist/antd-mobile.css'
 import './index.less'
 import App from 'src/App'
-import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
+import { ErrorBoundary } from './components'
 import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.render(

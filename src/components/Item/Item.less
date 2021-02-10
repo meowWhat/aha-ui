@@ -1,0 +1,32 @@
+.item {
+  height: 50px;
+  font-size: 16px;
+  display: grid;
+  grid-template-columns: 20% auto;
+  align-items: center;
+  padding-left: 15px;
+  &:active {
+    background-color: #f7f7f7;
+  }
+  .item-left {
+    line-height: 50px;
+    text-align: center;
+  }
+  .item-content {
+    height: 49px;
+    line-height: 50px;
+    border-bottom: 1px solid #f7f7f7;
+    display: grid;
+    grid-template-columns: auto 10%;
+    font-weight: 400;
+    font-size: 16px;
+    color: #333;
+  }
+  .item-right {
+    font-size: 14px;
+  }
+}
+
+.item-alone {
+  grid-template-columns: 100%;
+}
