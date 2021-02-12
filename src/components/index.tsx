@@ -1,5 +1,7 @@
+import { lazy } from 'react'
 import Progress from './Progress/Loading'
-import Item from './Item/Item'
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
+const Item = lazy(() => import('./Item/Item'))
+const MsgBox = lazy(() => import('./MsgBox/MsgBox'))
 
-export { Progress, Item, ErrorBoundary }
+export { Progress, Item, MsgBox, ErrorBoundary }

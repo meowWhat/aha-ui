@@ -1,3 +1,4 @@
+@import 'src/varable.less';
 .container {
   background: white;
   position: absolute;
@@ -10,30 +11,32 @@
 }
 
 .blue {
-  color: #0095ff !important;
+  color: @blue !important;
 }
 
 .green {
-  color: #1aad19 !important;
+  color: @green!important;
 }
 
 .deep-blue {
   color: #5b6c90;
 }
 .bgc-gray {
-  background-color: #f7f7f7;
+  background-color: @bg-gray;
 }
-
+.bgc-deep-white {
+  background-color: @bg-deep-white;
+}
 .heart {
   height: 80%;
   width: 80%;
 }
 
 input {
-  caret-color: #0095ff;
+  caret-color: @blue;
 }
 .gray {
-  color: #bcbcbc;
+  color: @gray;
 }
 
 .ellipsis {
@@ -43,8 +46,14 @@ input {
 }
 
 .am-whitespace {
-  background-color: #f7f7f7;
+  background-color: @bg-gray;
 }
 .am-whitespace.am-whitespace-sm {
   height: 9px;
+}
+.clearfix:after {
+  content: '.';
+  height: 0;
+  display: block;
+  clear: both;
 }

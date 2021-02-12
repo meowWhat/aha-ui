@@ -1,0 +1,42 @@
+.msg-box {
+  display: grid;
+  grid-template-columns: 54px auto;
+  padding: 10px;
+  padding-right: 20%;
+  .msg-content {
+    display: inline-block !important;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 2px rgba(10, 16, 20, 0.24), 0 0 2px rgba(10, 16, 20, 0.12);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    word-break: break-all;
+  }
+
+  .msg-content-self {
+    background-color: #a9e87a;
+  }
+  .msg-box-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .msg-box-body {
+    display: grid;
+    grid-template-rows: 6px 18px auto;
+    .msg-box-body-nickname {
+      font-size: 12px;
+    }
+  }
+}
+
+.msg-box-self {
+  grid-template-columns: auto 54px;
+  justify-items: right;
+  padding-right: 10px;
+  padding-left: 20%;
+  .msg-box-body {
+    grid-template-rows: auto;
+  }
+}
