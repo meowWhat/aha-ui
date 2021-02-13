@@ -15,9 +15,6 @@
     justify-items: center;
     font-weight: 300;
   }
-  .conversation-operation-expand {
-    grid-template-rows: 49px 200px;
-  }
   .qwe {
     box-sizing: border-box;
     width: 100%;
@@ -48,5 +45,22 @@
     align-items: center;
     justify-items: center;
     font-weight: 300;
+  }
+}
+
+.conversation-expand {
+  .conversation-list {
+    transform: translateY(-250px);
+  }
+  .conversation-operation {
+    grid-template-rows: 49px 250px;
+  }
+  .conversation-operation-emoji {
+    display: block;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    border-color: #333 !important;
+    width: 100%;
+    height: 250px;
   }
 }

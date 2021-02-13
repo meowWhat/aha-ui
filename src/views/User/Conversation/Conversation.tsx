@@ -10,10 +10,12 @@ import {
 } from '@ant-design/icons'
 import { useEffect, useState, useRef } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { MsgBox } from 'src/components'
+import { MsgBox, Emoji } from 'src/components'
 import img from 'src/img/logo.jpg'
 import './Conversation.less'
 import { Popover } from 'antd-mobile'
+import classNames from 'classnames'
+
 const Item = Popover.Item
 interface ConversationProps {
   onLoad: (nickName: string) => void
@@ -24,9 +26,6 @@ export interface ConversationLocation {
   nickName: string
 }
 
-const scroll = () => {
-  window.scrollTo({ top: document.querySelector('.user-content')?.clientHeight, behavior: 'smooth' })
-}
 const Conversation = (props: ConversationProps & RouteComponentProps) => {
   const { onLoad } = props
   const { id, nickName } = props.history.location.state as ConversationLocation
@@ -37,6 +36,13 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
   // 控制表情包扩展
   const [isEmoji, setIsEmoji] = useState(true)
   const textArea = useRef<HTMLTextAreaElement>(null)
+  const scroll = (isAuto: boolean) => {
+    setIsEmoji(true)
+    window.scrollTo({
+      top: document.querySelector('.user-content')?.clientHeight,
+      behavior: isAuto ? 'auto' : 'smooth',
+    })
+  }
   useEffect(() => {
     onLoad(nickName)
     let event: any
@@ -46,7 +52,7 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
         const newInnerHeight = window.innerHeight
         if (innerHeight > newInnerHeight) {
           // 键盘弹出事件处理
-          scroll()
+          scroll(true)
         }
       })
     } else {
@@ -54,10 +60,10 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
         textArea.current &&
         textArea.current.addEventListener('focusin', () => {
           // 键盘弹出事件处理
-          scroll()
+          scroll(true)
         })
     }
-    scroll()
+    scroll(false)
     return () => {
       if (/Android/gi.test(navigator.userAgent)) {
         window.removeEventListener('reset', event)
@@ -68,32 +74,34 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
     }
   }, [onLoad, nickName])
   return (
-    <div id="conversation" className="bgc-gray">
+    <div id="conversation" className={classNames('bgc-gray', { 'conversation-expand': !isEmoji })}>
       {/* 聊天框列表 */}
-      <MsgBox avatar={img} nickName={nickName}>
-        牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName}>
-        陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName}>
-        牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName} type="self">
-        牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName} type="self">
-        牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName} type="self">
-        牛年
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName}>
-        牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-      </MsgBox>
-      <MsgBox avatar={img} nickName={nickName} type="self">
-        牛年大吉,牛气冲天!!!!
-      </MsgBox>
+      <div className="conversation-list">
+        <MsgBox avatar={img} nickName={nickName}>
+          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName}>
+          陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName}>
+          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName} type="self">
+          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName} type="self">
+          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName} type="self">
+          牛年
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName}>
+          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
+        </MsgBox>
+        <MsgBox avatar={img} nickName={nickName} type="self">
+          牛年大吉,牛气冲天!!!!
+        </MsgBox>
+      </div>
       {/* 操作箱 */}
       <div className="conversation-operation bgc-deep-white">
         {/* 按住说话 */}
@@ -112,18 +120,25 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
             }
           }}
           ref={textArea}
-        ></textarea>
+        />
         {/* 表情包 */}
-        <span
-          onClick={() => {
-            if (isEmoji === false) {
-              textArea.current && textArea.current.focus()
-            }
-            setIsEmoji(!isEmoji)
-          }}
-        >
-          {isEmoji ? <SmileOutlined /> : <EditOutlined />}
-        </span>
+        {isEmoji ? (
+          <SmileOutlined
+            onClick={() => {
+              setTimeout(() => {
+                setIsEmoji(false)
+              })
+            }}
+          />
+        ) : (
+          <EditOutlined
+            onClick={() => {
+              if (isEmoji === false) {
+                textArea.current && textArea.current.focus()
+              }
+            }}
+          />
+        )}
         {isInput ? (
           // 发送按钮
           <SendOutlined
@@ -168,8 +183,11 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
             <PlusCircleOutlined />
           </Popover>
         )}
+        {/* 表情包扩展 */}
+        <div className={classNames('conversation-operation-emoji', { hidden: isEmoji })}>
+          <Emoji></Emoji>
+        </div>
       </div>
-      {/* <div className="conversation-emoji">asdasdasasdas</div> */}
     </div>
   )
 }
