@@ -1,5 +1,5 @@
 import './Home.less'
-import { withRouter, NavLink, Route, Switch, Redirect } from 'react-router-dom'
+import { withRouter, NavLink, Route, Switch, Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   CommentOutlined,
   UsergroupAddOutlined,
@@ -10,17 +10,34 @@ import {
 } from '@ant-design/icons'
 import { ActivityIndicator } from 'antd-mobile'
 import { lazy, Suspense } from 'react'
+import { useEffect } from 'react'
+import { IM } from 'src/api/IMDriver'
+import { observer } from 'mobx-react'
+import classNames from 'classnames'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
 const Find = lazy(() => import('./Find/Find'))
 const Profile = lazy(() => import('./Profile/Profile'))
 
-const Home = () => {
+interface HomeProps extends RouteComponentProps {
+  im: IM
+}
+const Home = observer(({ im }: HomeProps) => {
+  useEffect(() => {
+    if (!im.isOnline) {
+      im.login('age').then(() => {
+        im.onMessage(() => {})
+      })
+    }
+  }, [])
   return (
     <div id="home">
       <header className="home-nav bgc-gray">
-        <span className="home-nav-title">aha</span>
+        <span className="home-nav-title">
+          aha
+          <span className={classNames('home-nav-status', { offLine: !im.isOnline })}></span>
+        </span>
         <span></span>
         <span className="home-nav-icon">
           <SearchOutlined />
@@ -68,6 +85,6 @@ const Home = () => {
       </div>
     </div>
   )
-}
+})
 
 export default withRouter(Home)
