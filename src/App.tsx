@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, Suspense } from 'react'
 import { Progress } from './components'
 import { debounce } from './utils'
 import { ActivityIndicator } from 'antd-mobile'
-import { im } from './api/IMDriver'
+import { imState } from './states/IMState'
 
 function App(props: RouteComponentProps) {
   let time = useRef<NodeJS.Timeout>()
@@ -37,7 +37,7 @@ function App(props: RouteComponentProps) {
           <Login></Login>
         </Route>
         <Route path="/home">
-          <Home im={im}></Home>
+          <Home imState={imState} />
         </Route>
         <Route path="/user">
           <User></User>

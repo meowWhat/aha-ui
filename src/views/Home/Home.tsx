@@ -11,9 +11,11 @@ import {
 import { ActivityIndicator } from 'antd-mobile'
 import { lazy, Suspense } from 'react'
 import { useEffect } from 'react'
-import { IM } from 'src/api/IMDriver'
 import { observer } from 'mobx-react'
 import classNames from 'classnames'
+import { IMState } from 'src/states/IMState'
+import { im } from 'src/api/IMDriver'
+import { db } from 'src/api/indexDB'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
@@ -21,22 +23,26 @@ const Find = lazy(() => import('./Find/Find'))
 const Profile = lazy(() => import('./Profile/Profile'))
 
 interface HomeProps extends RouteComponentProps {
-  im: IM
+  imState: IMState
 }
-const Home = observer(({ im }: HomeProps) => {
+const Home = observer(({ imState }: HomeProps) => {
   useEffect(() => {
-    if (!im.isOnline) {
+    db.getConvList().then((res) => imState.updateConv(res))
+    if (!imState.isOnline) {
       im.login('age').then(() => {
-        im.onMessage(() => {})
+        im.onMessage((msg) => {
+          if (msg.messageType === 'TEXT') {
+          }
+        })
       })
     }
-  }, [])
+  }, [imState])
   return (
     <div id="home">
       <header className="home-nav bgc-gray">
         <span className="home-nav-title">
           aha
-          <span className={classNames('home-nav-status', { offLine: !im.isOnline })}></span>
+          <span className={classNames('home-nav-status', { offLine: !imState.isOnline })}></span>
         </span>
         <span></span>
         <span className="home-nav-icon">
@@ -50,7 +56,9 @@ const Home = observer(({ im }: HomeProps) => {
       <section className="home-content">
         <Suspense fallback={<ActivityIndicator size="large" text="正在加载" toast />}>
           <Switch>
-            <Route path="/home/message" exact component={Message} />
+            <Route path="/home/message" exact>
+              <Message imState={imState} />
+            </Route>
             <Route path="/home/linkman" exact component={Linkman} />
             <Route path="/home/find" exact component={Find} />
             <Route path="/home/profile" exact component={Profile} />

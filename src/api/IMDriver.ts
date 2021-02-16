@@ -1,18 +1,20 @@
 import AgoraRTM, { RtmClient, RtmMessage } from 'agora-rtm-sdk'
 import { Modal } from 'antd-mobile'
-import { makeObservable, observable } from 'mobx'
+import { imState } from 'src/states/IMState'
+
 class IM {
   private client: RtmClient
   private uid?: string
-  public isOnline: boolean = false
+  private isOnline: boolean = false
   constructor() {
-    makeObservable<IM>(this, { isOnline: observable })
     this.client = AgoraRTM.createInstance('27dec015472841e19b0a1313404f87b6')
     this.client.on('ConnectionStateChanged', (newState) => {
       if (newState === 'CONNECTED') {
         this.isOnline = true
+        imState.setOnline(true)
       } else {
         this.isOnline = false
+        imState.setOnline(false)
       }
     })
   }
@@ -92,4 +94,4 @@ class IM {
 
 const im = new IM()
 
-export { IM, im }
+export { im }
