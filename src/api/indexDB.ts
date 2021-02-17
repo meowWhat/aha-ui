@@ -19,45 +19,47 @@ class DataBase {
         },
       ])
     }
-    this.openDb()
   }
 
-  private openDb() {
-    const req = indexedDB.open(DataBase.DB_NAME, DataBase.DB_VERSION)
-    req.onupgradeneeded = (evt) => {
-      const db = (evt.target as typeof req).result
-      const createStore = this.createStore.bind(this, db)
-      createStore({ name: TB_MESSAGE, options: { autoIncrement: true } }, [
-        {
-          indexName: 'conversationId',
-          paramters: { unique: false },
-        },
-      ])
-      createStore({ name: TB_CONVERSATION, options: { keyPath: 'conversationId' } })
-    }
-    req.onsuccess = () => {
-      this.db = req.result
-      this.db.onerror = () => {
-        Modal.alert('', '服务器繁忙请稍后再试', [
+  public openDb() {
+    return new Promise((reslove) => {
+      const req = indexedDB.open(DataBase.DB_NAME, DataBase.DB_VERSION)
+      req.onupgradeneeded = (evt) => {
+        const db = (evt.target as typeof req).result
+        const createStore = this.createStore.bind(this, db)
+        createStore({ name: TB_MESSAGE, options: { autoIncrement: true } }, [
           {
-            text: '确认',
+            indexName: 'conversationId',
+            paramters: { unique: false },
+          },
+        ])
+        createStore({ name: TB_CONVERSATION, options: { keyPath: 'conversationId' } })
+      }
+      req.onsuccess = () => {
+        this.db = req.result
+        reslove(null)
+        this.db.onerror = () => {
+          Modal.alert('', '服务器繁忙请稍后再试', [
+            {
+              text: '确认',
+              onPress() {
+                window.location.href = 'https://www.jiahao.site/notFound'
+              },
+            },
+          ])
+        }
+      }
+      req.onerror = function () {
+        Modal.alert('', "Why didn't you allow my web app to use IndexedDB?!", [
+          {
+            text: 'refresh',
             onPress() {
-              window.location.href = 'https://www.jiahao.site/notFound'
+              window.location.href = 'https://www.jiahao.site/'
             },
           },
         ])
       }
-    }
-    req.onerror = function () {
-      Modal.alert('', "Why didn't you allow my web app to use IndexedDB?!", [
-        {
-          text: 'refresh',
-          onPress() {
-            window.location.href = 'https://www.jiahao.site/'
-          },
-        },
-      ])
-    }
+    })
   }
 
   private createStore(

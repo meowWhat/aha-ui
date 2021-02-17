@@ -4,11 +4,14 @@ import './index.less'
 import App from 'src/App'
 import { ErrorBoundary } from './components'
 import { BrowserRouter } from 'react-router-dom'
+import LazyLoad from 'react-lazyload'
 
 ReactDOM.render(
   <BrowserRouter>
     <ErrorBoundary>
-      <App />
+      <LazyLoad>
+        <App />
+      </LazyLoad>
     </ErrorBoundary>
   </BrowserRouter>,
   document.getElementById('root'),

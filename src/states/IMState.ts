@@ -12,7 +12,7 @@ class IMState {
   }
   public updateConv(data: ConversationObject[] | ConversationObject) {
     if (Array.isArray(data)) {
-      this.convList.push(...data)
+      this.convList = data
     } else {
       let updated = false
       for (let i = 0; i < this.convList.length; i++) {

@@ -1,3 +1,4 @@
+import { db } from 'src/api/indexDB'
 import './Home.less'
 import { withRouter, NavLink, Route, Switch, Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -15,7 +16,6 @@ import { observer } from 'mobx-react'
 import classNames from 'classnames'
 import { IMState } from 'src/states/IMState'
 import { im } from 'src/api/IMDriver'
-import { db } from 'src/api/indexDB'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
@@ -27,7 +27,9 @@ interface HomeProps extends RouteComponentProps {
 }
 const Home = observer(({ imState }: HomeProps) => {
   useEffect(() => {
-    db.getConvList().then((res) => imState.updateConv(res))
+    db.openDb().then(() => {
+      db.getConvList().then((res) => imState.updateConv(res))
+    })
     if (!imState.isOnline) {
       im.login('age').then(() => {
         im.onMessage((msg) => {
