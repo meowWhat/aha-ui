@@ -16,6 +16,8 @@ import { observer } from 'mobx-react'
 import classNames from 'classnames'
 import { IMState } from 'src/states/IMState'
 import { im } from 'src/api/IMDriver'
+import { isLogin } from 'src/api/login'
+import { staticData } from 'src/states/StaticData'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
@@ -25,19 +27,27 @@ const Profile = lazy(() => import('./Profile/Profile'))
 interface HomeProps extends RouteComponentProps {
   imState: IMState
 }
-const Home = observer(({ imState }: HomeProps) => {
+const Home = observer(({ imState, history }: HomeProps) => {
   useEffect(() => {
-    db.openDb().then(() => {
-      db.getConvList().then((res) => imState.updateConv(res))
-    })
-    if (!imState.isOnline) {
-      im.login('age').then(() => {
-        im.onMessage((msg) => {
-          if (msg.messageType === 'TEXT') {
-          }
+    isLogin().then((state) => {
+      if (!state) {
+        history.replace('/login')
+      } else {
+        staticData.userId = state
+        db.openDb().then(() => {
+          db.getConvList().then((res) => imState.updateConv(res))
         })
-      })
-    }
+        if (!imState.isOnline) {
+          im.login(staticData.userId).then(() => {
+            im.onMessage((msg) => {
+              if (msg.messageType === 'TEXT') {
+                console.log(msg.text)
+              }
+            })
+          })
+        }
+      }
+    })
   }, [imState])
   return (
     <div id="home">

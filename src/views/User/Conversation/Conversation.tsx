@@ -15,6 +15,7 @@ import img from 'src/img/logo.jpg'
 import './Conversation.less'
 import { Popover } from 'antd-mobile'
 import classNames from 'classnames'
+import { im } from 'src/api/IMDriver'
 
 const Item = Popover.Item
 interface ConversationProps {
@@ -143,7 +144,7 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
           // 发送按钮
           <SendOutlined
             onClick={() => {
-              console.log('send id' + id + value)
+              im.sendMessage(value, '4')
               setValue('')
               setIsInput(false)
               textArea.current && textArea.current.focus()
