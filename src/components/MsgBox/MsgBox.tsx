@@ -9,7 +9,7 @@ interface MsgBoxInterface {
 const MsgContent = (props: { type: 'other' | 'self'; children: any; className?: string }) => {
   const { type, children, className } = props
   const initClassName = () => {
-    const _class = 'msg-content ' + className
+    const _class = 'msg-content ' + (className || '')
     if (type === 'other') {
       return _class
     } else {

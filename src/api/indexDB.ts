@@ -98,26 +98,28 @@ class DataBase {
 
   public getMsgByConvId(convId: string, count?: number, direction: IDBCursorDirection = 'prev') {
     let index = 0
-    const res: MessageObject[] = []
-    return new Promise<MessageObject[]>((reslove) => {
-      this.db
-        .transaction(TB_MESSAGE, 'readonly')
-        .objectStore(TB_MESSAGE)
-        .index('conversationId')
-        .openCursor(convId, direction).onsuccess = function () {
-        const cursor = this.result
-        if (cursor) {
-          res.push(cursor.value)
-          index++
-          if (index === count) {
+    const res: Required<MessageObject>[] = []
+    return new Promise<Required<MessageObject>[]>((reslove) => {
+      this.checkDb().then(() => {
+        this.db
+          .transaction(TB_MESSAGE, 'readonly')
+          .objectStore(TB_MESSAGE)
+          .index('conversationId')
+          .openCursor(convId, direction).onsuccess = function () {
+          const cursor = this.result
+          if (cursor) {
+            res.push({ id: cursor.primaryKey, ...cursor.value })
+            index++
+            if (index === count) {
+              reslove(res)
+              return
+            }
+            cursor.continue()
+          } else {
             reslove(res)
-            return
           }
-          cursor.continue()
-        } else {
-          reslove(res)
         }
-      }
+      })
     })
   }
 
@@ -125,24 +127,32 @@ class DataBase {
     let index = 0
     const res: ConversationObject[] = []
     return new Promise<ConversationObject[]>((reslove) => {
-      this.db
-        .transaction(TB_CONVERSATION, 'readonly')
-        .objectStore(TB_CONVERSATION)
-        .openCursor(null, direction).onsuccess = function () {
-        const cursor = this.result
-        if (cursor) {
-          res.push(cursor.value)
-          index++
-          if (index === count) {
+      this.checkDb().then(() => {
+        this.db
+          .transaction(TB_CONVERSATION, 'readonly')
+          .objectStore(TB_CONVERSATION)
+          .openCursor(null, direction).onsuccess = function () {
+          const cursor = this.result
+          if (cursor) {
+            res.push(cursor.value)
+            index++
+            if (index === count) {
+              reslove(res)
+              return
+            }
+            cursor.continue()
+          } else {
             reslove(res)
-            return
           }
-          cursor.continue()
-        } else {
-          reslove(res)
         }
-      }
+      })
     })
+  }
+  private checkDb() {
+    if (!this.db) {
+      return this.openDb()
+    }
+    return Promise.resolve()
   }
 }
 

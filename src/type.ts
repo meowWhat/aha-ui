@@ -11,6 +11,7 @@ export interface MessageObject {
   type: 'TEXT' | 'IMAGE'
   sendId: string
   conversationId: string
+  id?: number
 }
 
 export interface ConversationObject {

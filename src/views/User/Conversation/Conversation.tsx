@@ -11,11 +11,12 @@ import {
 import { useEffect, useState, useRef } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { MsgBox, Emoji } from 'src/components'
-import img from 'src/img/logo.jpg'
 import './Conversation.less'
 import { Popover } from 'antd-mobile'
 import classNames from 'classnames'
 import { im } from 'src/api/IMDriver'
+import { db } from 'src/api/indexDB'
+import { staticData } from 'src/states/StaticData'
 
 const Item = Popover.Item
 interface ConversationProps {
@@ -28,9 +29,16 @@ export interface ConversationLocation {
   avatar: string
 }
 
+interface ListItem {
+  from: 'self' | 'other'
+  text: string
+  id: number
+}
 const Conversation = (props: ConversationProps & RouteComponentProps) => {
   const { onLoad } = props
-  const { convId, nickName } = props.history.location.state as ConversationLocation
+  const { convId, nickName: friendName, avatar: friendAvatar } = props.history.location
+    .state as ConversationLocation
+  const [list, setList] = useState<Array<ListItem>>([])
   // 控制当前状态为 输入 或 发送
   const [isInput, setIsInput] = useState(false)
   // 控制输入框内容
@@ -46,7 +54,24 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
     })
   }
   useEffect(() => {
-    onLoad(nickName)
+    onLoad(friendName)
+    // 更新列表
+    db.getMsgByConvId(convId, 25, 'next').then((data) => {
+      setList(
+        data.map(({ content, sendId, id }) => {
+          const res: ListItem = {
+            from: 'other',
+            text: '',
+            id,
+          }
+          if (sendId === staticData.userId) {
+            res.from = 'self'
+          }
+          res.text = content
+          return res
+        }),
+      )
+    })
     let event: any
     if (/Android/gi.test(navigator.userAgent)) {
       const innerHeight = window.innerHeight
@@ -74,35 +99,25 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
       }
       onLoad('')
     }
-  }, [onLoad, nickName])
+  }, [onLoad, friendName, convId])
   return (
     <div id="conversation" className={classNames('bgc-gray', { 'conversation-expand': !isEmoji })}>
       {/* 聊天框列表 */}
       <div className="conversation-list">
-        <MsgBox avatar={img} nickName={nickName}>
-          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName}>
-          陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼陈总牛逼
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName}>
-          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName} type="self">
-          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName} type="self">
-          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName} type="self">
-          牛年
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName}>
-          牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!牛年大吉,牛气冲天!!!!
-        </MsgBox>
-        <MsgBox avatar={img} nickName={nickName} type="self">
-          牛年大吉,牛气冲天!!!!
-        </MsgBox>
+        {list.map(({ from, text, id }) => {
+          if (from === 'self') {
+            return (
+              <MsgBox avatar={'xxx'} nickName={'自己'} type="self" key={id}>
+                {text}
+              </MsgBox>
+            )
+          }
+          return (
+            <MsgBox avatar={friendAvatar} nickName={friendName} key={id}>
+              {text}
+            </MsgBox>
+          )
+        })}
       </div>
       {/* 操作箱 */}
       <div className="conversation-operation bgc-deep-white">
