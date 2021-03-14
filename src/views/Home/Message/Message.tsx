@@ -3,71 +3,128 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { IMState } from 'src/states/IMState'
 import { Item } from 'src/components'
 import './Message.less'
-import img from 'src/img/logo.jpg'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useRef } from 'react'
-import { Modal } from 'antd-mobile'
+import { Modal, ActivityIndicator } from 'antd-mobile'
+import { ConversationLocation } from 'src/views/User/Conversation/Conversation'
+import { getUserInfo } from 'src/api/cacheApi'
+import { LOADING } from 'src/api/msgConst'
+
 const operation = Modal.operation
 
 interface MessageProps extends RouteComponentProps {
   imState: IMState
 }
+interface ListItem {
+  text: string
+  conversationId: string
+  avatar: string
+  nickName: string
+  date: string
+}
 
-const Message = observer(({ imState }: MessageProps) => {
+const Message = observer(({ imState, history }: MessageProps) => {
   const ref = useRef<{ startTime: number; timer?: NodeJS.Timeout }>({ startTime: 0 })
-  const longPress = () => {
+  const [list, setList] = useState<Array<ListItem>>([])
+  const [loading, setLoading] = useState(true)
+  const longPress = (convId: string) => {
     operation([
       {
         text: '删除该聊天',
         onPress: () => {
-          console.log('todo')
+          console.log('delete conversation', convId)
         },
       },
       // { text: '置顶聊天', onPress: () => console.log('置顶聊天被点击了') },
     ])
   }
-  const click = () => {
-    console.log('点击事件')
+  const click = (convId: string, nickName: string, avatar: string) => {
+    const state: ConversationLocation = {
+      nickName,
+      convId,
+      avatar,
+    }
+    history.push('/user/conversation', state)
   }
+
+  useEffect(() => {
+    setLoading(true)
+    Promise.all(
+      imState.convList.map(({ conversationId, peerId, text, date }) => {
+        return new Promise<ListItem>((reslove) => {
+          const res = {
+            text,
+            conversationId,
+            avatar: 'error',
+            nickName: peerId,
+            date,
+          }
+          getUserInfo(peerId)
+            .then((data) => {
+              if (data) {
+                res.avatar = data.avatar
+                res.nickName = data.nickname
+              }
+              reslove(res)
+            })
+            .finally(() => {
+              reslove(res)
+            })
+        })
+      }),
+    ).then((list) => {
+      setList(list)
+      setLoading(false)
+    })
+  }, [imState.convList])
   return (
     <div className="msg">
-      <div
-        onTouchStart={(e) => {
-          ref.current.startTime = Date.now()
-          ref.current.timer = setTimeout(longPress, 700)
-          e.preventDefault()
-        }}
-        onTouchMove={() => {
-          if (ref.current.timer) {
-            clearTimeout(ref.current.timer)
-            ref.current.timer = undefined
-            ref.current.startTime = 0
-          }
-        }}
-        onTouchEnd={() => {
-          if (Date.now() - ref.current.startTime < 700) {
-            click()
-          }
-          if (ref.current.timer) {
-            clearTimeout(ref.current.timer)
-          }
-        }}
-      >
-        <Item
-          left={<img src={img}></img>}
-          content={
-            <Fragment>
-              <div className="msg-nickName">昵称最长最长最长最长</div>
-              <p className="msg-text">asdasdasdasdasdasdasdasdasdasda aasdasdasdasdasdadasasdsd</p>
-            </Fragment>
-          }
-          right={
-            <Fragment>
-              <div className="msg-time">2020年12月31日</div>
-            </Fragment>
-          }
-        />
-      </div>
+      {!loading ? (
+        list.map(({ text, nickName, avatar, conversationId, date }) => {
+          return (
+            <div
+              key={conversationId}
+              onTouchStart={(e) => {
+                ref.current.startTime = Date.now()
+                ref.current.timer = setTimeout(longPress.bind(conversationId) as any, 700)
+                e.preventDefault()
+              }}
+              onTouchMove={() => {
+                if (ref.current.timer) {
+                  clearTimeout(ref.current.timer)
+                  ref.current.timer = undefined
+                  ref.current.startTime = 0
+                }
+              }}
+              onTouchEnd={() => {
+                if (Date.now() - ref.current.startTime < 700) {
+                  click(conversationId, nickName, avatar)
+                  if (ref.current.timer) {
+                    clearTimeout(ref.current.timer)
+                  }
+                }
+              }}
+            >
+              <Item
+                left={<img src={avatar} alt="头像"></img>}
+                content={
+                  <Fragment>
+                    <div className="msg-nickName">{nickName}</div>
+                    <p className="msg-text">{text}</p>
+                  </Fragment>
+                }
+                right={
+                  <Fragment>
+                    <div className="msg-time">{date}</div>
+                  </Fragment>
+                }
+              />
+            </div>
+          )
+        })
+      ) : (
+        <ActivityIndicator text={LOADING} />
+      )}
     </div>
   )
 })

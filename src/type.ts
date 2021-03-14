@@ -6,7 +6,7 @@ export interface Req {
 export type Dict<T> = { [key: string]: T }
 
 export interface MessageObject {
-  date: string
+  date: number
   content: string
   type: 'TEXT' | 'IMAGE'
   sendId: string
@@ -17,4 +17,5 @@ export interface ConversationObject {
   conversationId: string
   peerId: string
   text: string
+  date: string
 }

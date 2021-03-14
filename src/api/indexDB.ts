@@ -1,7 +1,9 @@
 import { Modal } from 'antd-mobile'
 import { ConversationObject, MessageObject } from 'src/type'
 
+// 存放消息列表
 const TB_MESSAGE = 'tb_message'
+// 会话列表
 const TB_CONVERSATION = 'tb_conversation'
 
 class DataBase {

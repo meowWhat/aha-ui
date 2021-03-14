@@ -23,13 +23,14 @@ interface ConversationProps {
 }
 
 export interface ConversationLocation {
-  id: string
+  convId: string
   nickName: string
+  avatar: string
 }
 
 const Conversation = (props: ConversationProps & RouteComponentProps) => {
   const { onLoad } = props
-  const { id, nickName } = props.history.location.state as ConversationLocation
+  const { convId, nickName } = props.history.location.state as ConversationLocation
   // 控制当前状态为 输入 或 发送
   const [isInput, setIsInput] = useState(false)
   // 控制输入框内容

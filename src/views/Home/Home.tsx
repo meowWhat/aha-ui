@@ -18,6 +18,7 @@ import { IMState } from 'src/states/IMState'
 import { im } from 'src/api/IMDriver'
 import { isLogin } from 'src/api/login'
 import { staticData } from 'src/states/StaticData'
+import { addMsg } from 'src/api/cacheApi'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
@@ -39,16 +40,14 @@ const Home = observer(({ imState, history }: HomeProps) => {
         })
         if (!imState.isOnline) {
           im.login(staticData.userId).then(() => {
-            im.onMessage((msg) => {
-              if (msg.messageType === 'TEXT') {
-                console.log(msg.text)
-              }
+            im.onMessage((msg, peerId) => {
+              addMsg(msg, peerId, imState)
             })
           })
         }
       }
     })
-  }, [imState])
+  }, [imState, history])
   return (
     <div id="home">
       <header className="home-nav bgc-gray">

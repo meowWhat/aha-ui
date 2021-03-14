@@ -1,11 +1,18 @@
 import { RouteComponentProps } from 'react-router'
 import { LinkmanListItem } from 'src/views/Home/Linkman/Linkman'
-import { ManOutlined, WomanOutlined, RightOutlined, MessageOutlined, VideoCameraOutlined } from '@ant-design/icons'
+import {
+  ManOutlined,
+  WomanOutlined,
+  RightOutlined,
+  MessageOutlined,
+  VideoCameraOutlined,
+} from '@ant-design/icons'
 import { Item } from 'src/components'
 import { NoticeBar, WhiteSpace } from 'antd-mobile'
 import './Profile.less'
 import { Fragment } from 'react'
 import { ConversationLocation } from '../Conversation/Conversation'
+import { getConvId } from 'src/api/cacheApi'
 
 export default function Profile(props: RouteComponentProps) {
   const { avatar, nickName, address, email, sex, id } = props.location.state as LinkmanListItem
@@ -48,7 +55,8 @@ export default function Profile(props: RouteComponentProps) {
             onClick={() => {
               const state: ConversationLocation = {
                 nickName,
-                id,
+                convId: getConvId(id),
+                avatar,
               }
               props.history.push('/user/conversation', state)
             }}

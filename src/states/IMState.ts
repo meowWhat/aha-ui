@@ -20,12 +20,14 @@ class IMState {
         if (item.conversationId === data.conversationId) {
           updated = true
           item.text = data.text
+          item.date = data.date
         }
       }
       if (!updated) {
         this.convList.push(data)
       }
     }
+    this.convList = [...this.convList]
   }
 }
 
