@@ -4,6 +4,7 @@ import { ConversationObject } from 'src/type'
 class IMState {
   public isOnline: boolean = false
   public convList: ConversationObject[] = []
+  public converRenderFlag = false
   constructor() {
     makeAutoObservable(this)
   }
@@ -28,6 +29,7 @@ class IMState {
       }
     }
     this.convList = [...this.convList]
+    this.converRenderFlag = !this.converRenderFlag
   }
 }
 

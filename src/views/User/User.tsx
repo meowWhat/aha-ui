@@ -4,6 +4,7 @@ import { LeftOutlined } from '@ant-design/icons'
 import { ActivityIndicator } from 'antd-mobile'
 import { lazy, Suspense } from 'react'
 import { useState } from 'react'
+import { imState } from 'src/states/IMState'
 
 const Conversation = lazy(() => import('./Conversation/Conversation'))
 const Profile = lazy(() => import('./Profile/Profile'))
@@ -32,6 +33,7 @@ const User = (props: RouteComponentProps) => {
                 onLoad={(nickName) => {
                   setTitle(nickName)
                 }}
+                imState={imState}
               />
             </Route>
             <Route path="/user/profile" exact component={Profile} />

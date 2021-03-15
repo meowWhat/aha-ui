@@ -17,10 +17,13 @@ import classNames from 'classnames'
 import { im } from 'src/api/IMDriver'
 import { db } from 'src/api/indexDB'
 import { staticData } from 'src/states/StaticData'
-
+import { observer } from 'mobx-react'
+import { IMState } from 'src/states/IMState'
 const Item = Popover.Item
-interface ConversationProps {
+
+interface ConversationProps extends RouteComponentProps {
   onLoad: (nickName: string) => void
+  imState: IMState
 }
 
 export interface ConversationLocation {
@@ -34,8 +37,8 @@ interface ListItem {
   text: string
   id: number
 }
-const Conversation = (props: ConversationProps & RouteComponentProps) => {
-  const { onLoad } = props
+const Conversation = observer((props: ConversationProps) => {
+  const { onLoad, imState } = props
   const { convId, nickName: friendName, avatar: friendAvatar } = props.history.location
     .state as ConversationLocation
   const [list, setList] = useState<Array<ListItem>>([])
@@ -71,7 +74,11 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
           return res
         }),
       )
+      scroll(false)
     })
+    // 假装以来 converRenderFlag
+    if (imState.converRenderFlag) {
+    }
     let event: any
     if (/Android/gi.test(navigator.userAgent)) {
       const innerHeight = window.innerHeight
@@ -90,7 +97,6 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
           scroll(true)
         })
     }
-    scroll(false)
     return () => {
       if (/Android/gi.test(navigator.userAgent)) {
         window.removeEventListener('reset', event)
@@ -99,7 +105,7 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
       }
       onLoad('')
     }
-  }, [onLoad, friendName, convId])
+  }, [onLoad, friendName, convId, imState.converRenderFlag])
   return (
     <div id="conversation" className={classNames('bgc-gray', { 'conversation-expand': !isEmoji })}>
       {/* 聊天框列表 */}
@@ -207,6 +213,6 @@ const Conversation = (props: ConversationProps & RouteComponentProps) => {
       </div>
     </div>
   )
-}
+})
 
 export default withRouter(Conversation)
