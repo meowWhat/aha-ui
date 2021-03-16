@@ -9,6 +9,7 @@ import { Modal, ActivityIndicator } from 'antd-mobile'
 import { ConversationLocation } from 'src/views/User/Conversation/Conversation'
 import { getUserInfo } from 'src/api/cacheApi'
 import { LOADING } from 'src/api/msgConst'
+import { db } from 'src/api/indexDB'
 
 const operation = Modal.operation
 
@@ -49,34 +50,41 @@ const Message = observer(({ imState, history }: MessageProps) => {
 
   useEffect(() => {
     setLoading(true)
-    Promise.all(
-      imState.convList.map(({ conversationId, peerId, text, date }) => {
-        return new Promise<ListItem>((reslove) => {
-          const res = {
-            text,
-            conversationId,
-            avatar: 'error',
-            nickName: peerId,
-            date,
-          }
-          getUserInfo(peerId)
-            .then((data) => {
-              if (data) {
-                res.avatar = data.avatar
-                res.nickName = data.nickname
+    // 假装有 converRender 依赖
+    if (imState.converRenderFlag) {
+    }
+    db.getConvList()
+      .then((res) => {
+        return Promise.all(
+          res.map(({ conversationId, peerId, text, date }) => {
+            return new Promise<ListItem>((reslove) => {
+              const res = {
+                text,
+                conversationId,
+                avatar: 'error',
+                nickName: peerId,
+                date,
               }
-              reslove(res)
+              getUserInfo(peerId)
+                .then((data) => {
+                  if (data) {
+                    res.avatar = data.avatar
+                    res.nickName = data.nickname
+                  }
+                  reslove(res)
+                })
+                .finally(() => {
+                  reslove(res)
+                })
             })
-            .finally(() => {
-              reslove(res)
-            })
-        })
-      }),
-    ).then((list) => {
-      setList(list)
-      setLoading(false)
-    })
-  }, [imState.convList])
+          }),
+        )
+      })
+      .then((list) => {
+        setList(list)
+        setLoading(false)
+      })
+  }, [imState.converRenderFlag])
   return (
     <div className="msg">
       {!loading ? (

@@ -12,13 +12,14 @@ import { useEffect, useState, useRef } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { MsgBox, Emoji } from 'src/components'
 import './Conversation.less'
-import { Popover } from 'antd-mobile'
+import { Popover, Toast } from 'antd-mobile'
 import classNames from 'classnames'
 import { im } from 'src/api/IMDriver'
 import { db } from 'src/api/indexDB'
 import { staticData } from 'src/states/StaticData'
 import { observer } from 'mobx-react'
 import { IMState } from 'src/states/IMState'
+import { addMsg, getFriendIdByConvId } from 'src/api/cacheApi'
 const Item = Popover.Item
 
 interface ConversationProps extends RouteComponentProps {
@@ -76,7 +77,7 @@ const Conversation = observer((props: ConversationProps) => {
       )
       scroll(false)
     })
-    // 假装以来 converRenderFlag
+    // 假装依赖 converRenderFlag
     if (imState.converRenderFlag) {
     }
     let event: any
@@ -166,7 +167,15 @@ const Conversation = observer((props: ConversationProps) => {
           // 发送按钮
           <SendOutlined
             onClick={() => {
-              im.sendMessage(value, '4')
+              const peerId = getFriendIdByConvId(convId)
+              im.sendMessage(value, peerId).then(
+                () => {
+                  addMsg({ messageType: 'TEXT', text: value }, staticData.userId, peerId, imState)
+                },
+                (error) => {
+                  Toast.info(error)
+                },
+              )
               setValue('')
               setIsInput(false)
               textArea.current && textArea.current.focus()

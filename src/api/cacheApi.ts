@@ -6,13 +6,12 @@ import { IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
 import dayjs from 'dayjs'
 
-export const addMsg = (msg: RtmMessage, peerId: string, imState: IMState) => {
-  const conversationId = `${staticData.userId}@${peerId}`
+export const addMsg = (msg: RtmMessage, sendId: string, peerId: string, imState: IMState) => {
+  const conversationId = getConvId(peerId)
   const date = Date.now()
   let content: string = ''
   let type: MessageObject['type'] = 'TEXT'
   let text: string = ''
-  const sendId: string = peerId
   if (msg.messageType === 'TEXT') {
     content = msg.text
     text = content.slice(0, 8)
@@ -36,8 +35,9 @@ export const addMsg = (msg: RtmMessage, peerId: string, imState: IMState) => {
     text,
     date: dayjs().format('MM月DD日 hh:mm'),
   }
-  db.addMessage(msgObj, convObj)
-  imState.updateConv(convObj)
+  db.addMessage(msgObj, convObj).then(() => {
+    imState.updateConv()
+  })
 }
 
 export const getUserInfo = async (id: string) => {
@@ -64,4 +64,12 @@ export const getUserInfo = async (id: string) => {
 
 export const getConvId = (peerId: string) => {
   return `${staticData.userId}@${peerId}`
+}
+
+export const getFriendIdByConvId = (convId: string) => {
+  const users = convId.split('@')
+  if (users[0] === staticData.userId) {
+    return users[1]
+  }
+  return users[0]
 }
