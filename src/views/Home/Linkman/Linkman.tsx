@@ -44,7 +44,7 @@ const Linkman = (props: RouteComponentProps) => {
         {
           avatar: img,
           id: '4',
-          nickName: '5号好友',
+          nickName: '可聊天用户',
         },
         {
           avatar: img,

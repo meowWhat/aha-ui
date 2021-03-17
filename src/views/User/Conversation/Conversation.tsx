@@ -19,7 +19,7 @@ import { db } from 'src/api/indexDB'
 import { staticData } from 'src/states/StaticData'
 import { observer } from 'mobx-react'
 import { IMState } from 'src/states/IMState'
-import { addMsg, getFriendIdByConvId } from 'src/api/cacheApi'
+import { addMsg, getConvId, getFriendIdByConvId } from 'src/api/cacheApi'
 const Item = Popover.Item
 
 interface ConversationProps extends RouteComponentProps {
@@ -168,9 +168,12 @@ const Conversation = observer((props: ConversationProps) => {
           <SendOutlined
             onClick={() => {
               const peerId = getFriendIdByConvId(convId)
+              console.log(peerId, staticData.userId)
+
               im.sendMessage(value, peerId).then(
                 () => {
-                  addMsg({ messageType: 'TEXT', text: value }, staticData.userId, peerId, imState)
+                  const convId = getConvId(peerId)
+                  addMsg({ messageType: 'TEXT', text: value }, staticData.userId, peerId, convId, imState)
                 },
                 (error) => {
                   Toast.info(error)

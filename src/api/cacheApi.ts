@@ -6,8 +6,13 @@ import { IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
 import dayjs from 'dayjs'
 
-export const addMsg = (msg: RtmMessage, sendId: string, peerId: string, imState: IMState) => {
-  const conversationId = getConvId(peerId)
+export const addMsg = (
+  msg: RtmMessage,
+  sendId: string,
+  peerId: string,
+  conversationId: string,
+  imState: IMState,
+) => {
   const date = Date.now()
   let content: string = ''
   let type: MessageObject['type'] = 'TEXT'
@@ -62,8 +67,8 @@ export const getUserInfo = async (id: string) => {
   }
 }
 
-export const getConvId = (peerId: string) => {
-  return `${staticData.userId}@${peerId}`
+export const getConvId = (friendId: string) => {
+  return `${staticData.userId}@${friendId}`
 }
 
 export const getFriendIdByConvId = (convId: string) => {
