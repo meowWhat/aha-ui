@@ -20,3 +20,15 @@ export interface ConversationObject {
   text: string
   date: string
 }
+
+export interface ApiUserInfo {
+  id: string
+  nickname: string
+  avatar: string
+  sex: string
+  birth: string
+  email: string
+  address: string
+  sign: string
+  comment: string
+}

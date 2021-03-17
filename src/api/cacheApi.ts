@@ -45,7 +45,7 @@ export const addMsg = (
   })
 }
 
-export const getUserInfo = async (id: string) => {
+export const getUserInfo: (id: string) => Promise<any> = async (id: string) => {
   const data = window.localStorage.getItem(id)
   if (data) {
     setTimeout(() => {
@@ -62,7 +62,7 @@ export const getUserInfo = async (id: string) => {
     const data = await service.post<any, Req>('/user/info', { id })
     if (data.statusCode === 200) {
       window.localStorage.setItem(id, JSON.stringify(data.message[0]))
-      return data.message
+      return data.message[0]
     }
   }
 }

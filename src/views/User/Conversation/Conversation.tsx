@@ -114,7 +114,12 @@ const Conversation = observer((props: ConversationProps) => {
         {list.map(({ from, text, id }) => {
           if (from === 'self') {
             return (
-              <MsgBox avatar={'xxx'} nickName={'自己'} type="self" key={id}>
+              <MsgBox
+                avatar={staticData.userInfo.avatar}
+                nickName={staticData.userInfo.nickname}
+                type="self"
+                key={id}
+              >
                 {text}
               </MsgBox>
             )
@@ -168,8 +173,6 @@ const Conversation = observer((props: ConversationProps) => {
           <SendOutlined
             onClick={() => {
               const peerId = getFriendIdByConvId(convId)
-              console.log(peerId, staticData.userId)
-
               im.sendMessage(value, peerId).then(
                 () => {
                   const convId = getConvId(peerId)

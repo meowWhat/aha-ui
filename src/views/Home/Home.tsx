@@ -17,7 +17,7 @@ import { IMState } from 'src/states/IMState'
 import { im } from 'src/api/IMDriver'
 import { isLogin } from 'src/api/login'
 import { staticData } from 'src/states/StaticData'
-import { addMsg, getConvId } from 'src/api/cacheApi'
+import { addMsg, getConvId, getUserInfo } from 'src/api/cacheApi'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
@@ -30,12 +30,18 @@ interface HomeProps extends RouteComponentProps {
 const Home = observer(({ imState, history }: HomeProps) => {
   const [loginFlag, setLoginFlag] = useState(false)
   useEffect(() => {
-    isLogin().then((state) => {
-      if (!state) {
-        history.replace('/login')
-      } else {
-        staticData.userId = state
-        // alert(staticData.userId)
+    isLogin()
+      .then((state) => {
+        if (!state) {
+          history.replace('/login')
+        } else {
+          staticData.userId = state
+          // 抓取 userInfo
+          return getUserInfo(staticData.userId)
+        }
+      })
+      .then((userInfo) => {
+        staticData.userInfo = userInfo
         setLoginFlag(true)
         if (!imState.isOnline) {
           im.login(staticData.userId).then(() => {
@@ -45,8 +51,7 @@ const Home = observer(({ imState, history }: HomeProps) => {
             })
           })
         }
-      }
-    })
+      })
   }, [imState, history])
   return (
     <div id="home">
