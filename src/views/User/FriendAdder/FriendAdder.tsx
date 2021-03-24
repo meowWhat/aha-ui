@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ScanOutlined, UploadOutlined, ItalicOutlined } from '@ant-design/icons'
 import validator from 'src/utils/validator'
 import QrReader from 'react-qr-reader'
+import jsQr from 'jsqr'
 
 interface FriendAdderProps {
   onLoad: (title: string) => void
@@ -71,7 +72,7 @@ export default function FriendAdder(props: FriendAdderProps) {
           <div
             className="aha-friend-adder-list-item"
             onClick={() => {
-              console.log('asdasd')
+              qr.current.openImageDialog()
             }}
           >
             <ScanOutlined /> 扫描二维码添加
@@ -101,6 +102,7 @@ export default function FriendAdder(props: FriendAdderProps) {
             console.log(data)
           }}
           style={{ width: '100%' }}
+          legacyMode
         />
       </div>
     </div>
