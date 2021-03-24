@@ -3,6 +3,7 @@ import { List, InputItem, Toast } from 'antd-mobile'
 import { useEffect, useRef, useState } from 'react'
 import { ScanOutlined, UploadOutlined, ItalicOutlined } from '@ant-design/icons'
 import validator from 'src/utils/validator'
+import QrReader from 'react-qr-reader'
 
 interface FriendAdderProps {
   onLoad: (title: string) => void
@@ -12,6 +13,7 @@ export default function FriendAdder(props: FriendAdderProps) {
   const [value, setValue] = useState('')
   const [hasError, setHasError] = useState(false)
   const input = useRef<HTMLInputElement>(null)
+  const qr = useRef<any>(null)
   // email input value change
   const handleValueChange = (value: string) => {
     if (validator.isEmail(value)) {
@@ -88,6 +90,19 @@ export default function FriendAdder(props: FriendAdderProps) {
           }
         }}
       />
+      <div>
+        <QrReader
+          ref={qr}
+          delay={300}
+          onError={(err) => {
+            Toast.info(JSON.stringify(err))
+          }}
+          onScan={(data) => {
+            console.log(data)
+          }}
+          style={{ width: '100%' }}
+        />
+      </div>
     </div>
   )
 }
