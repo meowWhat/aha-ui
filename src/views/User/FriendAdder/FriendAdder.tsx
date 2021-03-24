@@ -1,6 +1,6 @@
 import './FriendAdder.less'
 import { List, InputItem, Toast } from 'antd-mobile'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ScanOutlined, UploadOutlined, ItalicOutlined } from '@ant-design/icons'
 import validator from 'src/utils/validator'
 
@@ -11,7 +11,7 @@ export default function FriendAdder(props: FriendAdderProps) {
   const { onLoad } = props
   const [value, setValue] = useState('')
   const [hasError, setHasError] = useState(false)
-
+  const input = useRef<HTMLInputElement>(null)
   // email input value change
   const handleValueChange = (value: string) => {
     if (validator.isEmail(value)) {
@@ -59,7 +59,7 @@ export default function FriendAdder(props: FriendAdderProps) {
           <div
             className="aha-friend-adder-list-item"
             onClick={() => {
-              console.log('asdasd')
+              input.current?.click()
             }}
           >
             <UploadOutlined /> 上传二维码添加
@@ -76,6 +76,18 @@ export default function FriendAdder(props: FriendAdderProps) {
           </div>
         </List.Item>
       </List>
+      {/* 上传图片解析二维码 */}
+      <input
+        ref={input}
+        type="file"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          if (e.target.files) {
+            const files = e.target.files
+            console.log(files)
+          }
+        }}
+      />
     </div>
   )
 }
