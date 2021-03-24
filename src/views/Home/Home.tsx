@@ -64,7 +64,12 @@ const Home = observer(({ imState, history }: HomeProps) => {
         <span className="home-nav-icon">
           <SearchOutlined />
         </span>
-        <span className="home-nav-icon">
+        <span
+          className="home-nav-icon"
+          onClick={() => {
+            history.push('/user/friendAdder')
+          }}
+        >
           <PlusCircleOutlined />
         </span>
       </header>
@@ -79,7 +84,6 @@ const Home = observer(({ imState, history }: HomeProps) => {
               <Route path="/home/linkman" exact component={Linkman} />
               <Route path="/home/find" exact component={Find} />
               <Route path="/home/profile" exact component={Profile} />
-
               <Route path="/home" exact>
                 <Redirect to="/home/message"></Redirect>
               </Route>

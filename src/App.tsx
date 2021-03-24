@@ -52,7 +52,7 @@ function App(props: RouteComponentProps) {
           <NotFound></NotFound>
         </Route>
         <Route path="/" exact>
-          <Redirect to="/login"></Redirect>
+          <Redirect to="/home"></Redirect>
         </Route>
         <Route>
           <Redirect to="/notFound"></Redirect>

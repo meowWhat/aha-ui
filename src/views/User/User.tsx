@@ -8,6 +8,7 @@ import { imState } from 'src/states/IMState'
 
 const Conversation = lazy(() => import('./Conversation/Conversation'))
 const Profile = lazy(() => import('./Profile/Profile'))
+const FriendAdder = lazy(() => import('./FriendAdder/FriendAdder'))
 
 const User = (props: RouteComponentProps) => {
   const [title, setTitle] = useState('')
@@ -37,6 +38,13 @@ const User = (props: RouteComponentProps) => {
               />
             </Route>
             <Route path="/user/profile" exact component={Profile} />
+            <Route path="/user/friendAdder" exact>
+              <FriendAdder
+                onLoad={(title) => {
+                  setTitle(title)
+                }}
+              />
+            </Route>
             <Route>
               <Redirect to="/notFound"></Redirect>
             </Route>
