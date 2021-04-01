@@ -10,8 +10,8 @@ class FriendService {
     return service.post<any, Res>('/friend/invite', { email })
   }
 
-  public acceptFriend(userId: string, key: string) {
-    return service.post<any, Res>('/friend', { userId, key })
+  public acceptFriend(key: string) {
+    return service.post<any, Res>('/friend', { key })
   }
 
   public deletFriend(friend_id: string) {

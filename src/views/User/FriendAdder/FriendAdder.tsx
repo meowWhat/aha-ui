@@ -163,7 +163,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
                 extra={renderOperation(isAccept)}
                 onClick={() => {
                   if (!isAccept) {
-                    friendService.acceptFriend(userId, key).then((res) => {
+                    friendService.acceptFriend(key).then((res) => {
                       if (res.statusCode === 200) {
                         db.updateInviteItem({
                           userId,
