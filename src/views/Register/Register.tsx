@@ -2,7 +2,7 @@ import './Register.less'
 import { Button, List, InputItem, Radio, Modal } from 'antd-mobile'
 import { useEffect, useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { Req } from 'src/type'
+import { Res } from 'src/type'
 import { service, validate } from 'src/utils'
 import { handleResMessage } from 'src/api/resHandle'
 
@@ -22,7 +22,7 @@ const Register = (props: RouteComponentProps) => {
   }, [])
 
   const getCaptcha = () => {
-    service.get<any, Req>('/app/captcha').then((data) => {
+    service.get<any, Res>('/app/captcha').then((data) => {
       if (data && data.message) {
         setSvg(data.message.svg)
       }
@@ -78,7 +78,7 @@ const Register = (props: RouteComponentProps) => {
             }
             setLoading(true)
             service
-              .get<any, Req>('/register', { params: { email, text, isCreate } })
+              .get<any, Res>('/register', { params: { email, text, isCreate } })
               .then((data) => {
                 setLoading(false)
                 if (data.statusCode === 200) {

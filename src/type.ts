@@ -1,4 +1,4 @@
-export interface Req {
+export interface Res {
   statusCode: number
   message: { [key: string]: any }
 }

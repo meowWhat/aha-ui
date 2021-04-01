@@ -2,7 +2,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Button, List, InputItem, Modal } from 'antd-mobile'
 import { useEffect, useState } from 'react'
 import { service, validate } from 'src/utils'
-import { Req } from 'src/type'
+import { Res } from 'src/type'
 import { handleResMessage } from 'src/api/resHandle'
 
 const Create = (props: RouteComponentProps) => {
@@ -79,7 +79,7 @@ const Create = (props: RouteComponentProps) => {
             if (isCreate) {
               // 注册用户
               service
-                .post<any, Req>('/register', data)
+                .post<any, Res>('/register', data)
                 .then((data) => {
                   setLoading(false)
                   if (data && data.statusCode === 200) {
@@ -102,7 +102,7 @@ const Create = (props: RouteComponentProps) => {
             } else {
               // 修改密码
               service
-                .put<any, Req>('/register/forget', data)
+                .put<any, Res>('/register/forget', data)
                 .then((data) => {
                   setLoading(false)
                   if (data && data.statusCode === 200) {

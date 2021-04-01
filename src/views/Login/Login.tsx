@@ -10,7 +10,7 @@ import {
 import { Button, Modal } from 'antd-mobile'
 import { useState } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { Req } from 'src/type'
+import { Res } from 'src/type'
 import { withRouter } from 'react-router-dom'
 import { service, validate } from 'src/utils'
 
@@ -97,7 +97,7 @@ const Login = (props: RouteComponentProps) => {
               }
               setLoading(true)
               service
-                .post<any, Req>('/login', { email: text, password: pwd })
+                .post<any, Res>('/login', { email: text, password: pwd })
                 .then((res) => {
                   setLoading(false)
                   if (res && res.statusCode === 200) {

@@ -1,9 +1,10 @@
-import { Req } from 'src/type'
+import { Res } from 'src/type'
 import { service } from 'src/utils'
 import { Modal } from 'antd-mobile'
+
 export const isLogin = async () => {
   try {
-    const data = await service.get<any, Req>('/login')
+    const data = await service.get<any, Res>('/login')
     if (data.statusCode === 200) {
       return data.message + ''
     } else {

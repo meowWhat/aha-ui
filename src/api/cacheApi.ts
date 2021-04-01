@@ -1,6 +1,6 @@
 import { RtmMessage } from 'agora-rtm-sdk'
 import { staticData } from 'src/states/StaticData'
-import { ConversationObject, MessageObject, Req } from 'src/type'
+import { ConversationObject, MessageObject, Res } from 'src/type'
 import { db } from 'src/api/indexDB'
 import { IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
@@ -50,7 +50,7 @@ export const getUserInfo: (id: string) => Promise<any> = async (id: string) => {
   if (data) {
     setTimeout(() => {
       service
-        .post<any, Req>('/user/info', { id })
+        .post<any, Res>('/user/info', { id })
         .then((data) => {
           if (data.statusCode === 200) {
             window.localStorage.setItem(id, JSON.stringify(data.message[0]))
@@ -59,7 +59,7 @@ export const getUserInfo: (id: string) => Promise<any> = async (id: string) => {
     })
     return JSON.parse(data)
   } else {
-    const data = await service.post<any, Req>('/user/info', { id })
+    const data = await service.post<any, Res>('/user/info', { id })
     if (data.statusCode === 200) {
       window.localStorage.setItem(id, JSON.stringify(data.message[0]))
       return data.message[0]

@@ -1,7 +1,7 @@
 import { ManOutlined, WomanOutlined } from '@ant-design/icons'
 import './UserInfo.less'
 
-interface UserInfoProps {
+export interface UserInfoProps {
   info: {
     avatar: string
     nickName: string

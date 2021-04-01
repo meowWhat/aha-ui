@@ -1,5 +1,12 @@
 import './Home.less'
-import { withRouter, NavLink, Route, Switch, Redirect, RouteComponentProps } from 'react-router-dom'
+import {
+  withRouter,
+  NavLink,
+  Route,
+  Switch,
+  Redirect,
+  RouteComponentProps,
+} from 'react-router-dom'
 import {
   CommentOutlined,
   UsergroupAddOutlined,
@@ -58,7 +65,11 @@ const Home = observer(({ imState, history }: HomeProps) => {
       <header className="home-nav bgc-gray">
         <span className="home-nav-title">
           aha
-          <span className={classNames('home-nav-status', { offLine: !imState.isOnline })}></span>
+          <span
+            className={classNames('home-nav-status', {
+              offLine: !imState.isOnline,
+            })}
+          ></span>
         </span>
         <span></span>
         <span className="home-nav-icon">
@@ -76,7 +87,9 @@ const Home = observer(({ imState, history }: HomeProps) => {
 
       <section className="home-content">
         {loginFlag ? (
-          <Suspense fallback={<ActivityIndicator size="large" text="正在加载" toast />}>
+          <Suspense
+            fallback={<ActivityIndicator size="large" text="正在加载" toast />}
+          >
             <Switch>
               <Route path="/home/message" exact>
                 <Message imState={imState} />
@@ -98,19 +111,35 @@ const Home = observer(({ imState, history }: HomeProps) => {
       </section>
 
       <div className="home-tabbar bgc-gray">
-        <NavLink activeClassName="green" to="/home/message" className="home-tabbar-item">
+        <NavLink
+          activeClassName="green"
+          to="/home/message"
+          className="home-tabbar-item"
+        >
           <CommentOutlined />
           <span>消息</span>
         </NavLink>
-        <NavLink activeClassName="green" to="/home/linkman" className="home-tabbar-item">
+        <NavLink
+          activeClassName="green"
+          to="/home/linkman"
+          className="home-tabbar-item"
+        >
           <UsergroupAddOutlined />
           <span>通讯录</span>
         </NavLink>
-        <NavLink activeClassName="green" to="/home/find" className="home-tabbar-item">
+        <NavLink
+          activeClassName="green"
+          to="/home/find"
+          className="home-tabbar-item"
+        >
           <CompassOutlined />
           <span>发现</span>
         </NavLink>
-        <NavLink activeClassName="green" to="/home/profile" className="home-tabbar-item">
+        <NavLink
+          activeClassName="green"
+          to="/home/profile"
+          className="home-tabbar-item"
+        >
           <UserOutlined />
           <span>我</span>
         </NavLink>
