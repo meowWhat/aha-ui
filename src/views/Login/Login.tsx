@@ -1,7 +1,12 @@
 import './Login.less'
 import logo from '../../img/logo.jpg'
 import title from '../../img/title.jpg'
-import { CloseOutlined, EyeOutlined, EyeInvisibleOutlined, UserOutlined } from '@ant-design/icons'
+import {
+  CloseOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import { Button, Modal } from 'antd-mobile'
 import { useState } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
@@ -18,7 +23,7 @@ const Login = (props: RouteComponentProps) => {
   return (
     <div id="login">
       <div className="content container">
-        {/*   LOGO */}
+        {/* LOGO */}
         <header className="header">
           <img src={logo} alt="aha-logo" className="header-logo" />
           <img src={title} alt="aha-logo" className="header-title" />
@@ -55,7 +60,11 @@ const Login = (props: RouteComponentProps) => {
                 setShowPwd(!showPwd)
               }}
             >
-              {showPwd ? <EyeInvisibleOutlined style={{ color: 'red' }} /> : <EyeOutlined style={{ color: '#ddd' }} />}
+              {showPwd ? (
+                <EyeInvisibleOutlined style={{ color: 'red' }} />
+              ) : (
+                <EyeOutlined style={{ color: '#ddd' }} />
+              )}
             </span>
             <input
               type={showPwd ? 'text' : 'password'}

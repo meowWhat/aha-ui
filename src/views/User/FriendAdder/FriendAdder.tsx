@@ -1,10 +1,9 @@
 import './FriendAdder.less'
 import { List, InputItem, Toast } from 'antd-mobile'
 import { useEffect, useRef, useState } from 'react'
-import { ScanOutlined, UploadOutlined, ItalicOutlined } from '@ant-design/icons'
+import { ScanOutlined, ItalicOutlined } from '@ant-design/icons'
 import validator from 'src/utils/validator'
 import QrReader from 'react-qr-reader'
-import jsQr from 'jsqr'
 
 interface FriendAdderProps {
   onLoad: (title: string) => void
@@ -13,8 +12,9 @@ export default function FriendAdder(props: FriendAdderProps) {
   const { onLoad } = props
   const [value, setValue] = useState('')
   const [hasError, setHasError] = useState(false)
-  const input = useRef<HTMLInputElement>(null)
+  const [isShowQrScan, setIsShowQrScan] = useState(false)
   const qr = useRef<any>(null)
+
   // email input value change
   const handleValueChange = (value: string) => {
     if (validator.isEmail(value)) {
@@ -27,6 +27,7 @@ export default function FriendAdder(props: FriendAdderProps) {
 
   // 处理添加好友
   const handleFriendAdd = (friendEmail: string) => {
+    Toast.success('消息已发送!')
     console.log(friendEmail)
   }
 
@@ -58,52 +59,36 @@ export default function FriendAdder(props: FriendAdderProps) {
             <ItalicOutlined /> &nbsp;&nbsp;&nbsp;输入邮箱添加
           </div>
         </List.Item>
+
         <List.Item>
           <div
             className="aha-friend-adder-list-item"
             onClick={() => {
-              input.current?.click()
-            }}
-          >
-            <UploadOutlined /> 上传二维码添加
-          </div>
-        </List.Item>
-        <List.Item>
-          <div
-            className="aha-friend-adder-list-item"
-            onClick={() => {
-              qr.current.openImageDialog()
+              setIsShowQrScan(true)
             }}
           >
             <ScanOutlined /> 扫描二维码添加
           </div>
         </List.Item>
       </List>
-      {/* 上传图片解析二维码 */}
-      <input
-        ref={input}
-        type="file"
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          if (e.target.files) {
-            const files = e.target.files
-            console.log(files)
-          }
-        }}
-      />
+
       <div>
-        <QrReader
-          ref={qr}
-          delay={300}
-          onError={(err) => {
-            Toast.info(JSON.stringify(err))
-          }}
-          onScan={(data) => {
-            console.log(data)
-          }}
-          style={{ width: '100%' }}
-          legacyMode
-        />
+        {isShowQrScan ? (
+          <QrReader
+            ref={qr}
+            delay={300}
+            onError={(err) => {
+              Toast.info(JSON.stringify(err))
+            }}
+            onScan={(data) => {
+              if (data !== null) {
+                handleFriendAdd(data)
+                setIsShowQrScan(false)
+              }
+            }}
+            style={{ width: '100%' }}
+          />
+        ) : null}
       </div>
     </div>
   )
