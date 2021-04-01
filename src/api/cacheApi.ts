@@ -1,8 +1,8 @@
 import { RtmMessage } from 'agora-rtm-sdk'
 import { staticData } from 'src/states/StaticData'
-import { ConversationObject, MessageObject, Res } from 'src/type'
+import { ApiUserInfo, ConversationObject, MessageObject, Res } from 'src/type'
 import { db } from 'src/api/indexDB'
-import { IMState } from 'src/states/IMState'
+import { imState, IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
 import dayjs from 'dayjs'
 
@@ -45,7 +45,7 @@ export const addMsg = (
   })
 }
 
-export const getUserInfo: (id: string) => Promise<any> = async (id: string) => {
+export const getUserInfo: (id: string) => Promise<ApiUserInfo> = async (id: string) => {
   const data = window.localStorage.getItem(id)
   if (data) {
     setTimeout(() => {
@@ -77,4 +77,14 @@ export const getFriendIdByConvId = (convId: string) => {
     return users[1]
   }
   return users[0]
+}
+
+/**
+ * 处理好友邀请
+ * @param friendId 好友id
+ */
+export const handleInviteMsg = (friendId: string, key: string) => {
+  db.addInviteItem(friendId, key).then(() => {
+    imState.updateInvite()
+  })
 }

@@ -32,3 +32,9 @@ export interface ApiUserInfo {
   sign: string
   comment: string
 }
+
+export interface InviteObject {
+  userId: string
+  isAccept: boolean
+  key: string
+}

@@ -2,7 +2,12 @@ import AgoraRTM, { RtmClient, RtmMessage } from 'agora-rtm-sdk'
 import { Modal } from 'antd-mobile'
 import { imState } from 'src/states/IMState'
 
+
 class IM {
+  static KEY = {
+    // 添加好友
+    INVITE: '@dzxc'
+  }
   private client: RtmClient
   private uid?: string
   private isOnline: boolean = false
@@ -89,6 +94,47 @@ class IM {
           })
       }
     })
+  }
+
+  /**
+   * 添加好友
+   */
+  public inviteFriend(friendId: string, key: string) {
+    return this.sendMessage(
+      this.encodeMsg(IM['KEY']['INVITE'], friendId + '@' + key), friendId
+    )
+  }
+
+  /**
+   * 检查消息是否为添加好友
+   */
+  public getInviteMsg(msg: RtmMessage) {
+    if (msg.messageType === 'TEXT') {
+      const decodeMsg = this.decodeMsg(IM['KEY']['INVITE'], msg.text)
+
+      if (decodeMsg) {
+        const split = decodeMsg.split('@')
+        return {
+          id: split[0],
+          key: split[1]
+        }
+      }
+    }
+    return null
+  }
+
+  private encodeMsg(key: string, msg: string) {
+    return `${key}${msg}${key}`
+  }
+
+  private decodeMsg(key: string, msg: string) {
+    const regex = new RegExp(`^${key}(.*?)${key}$`)
+
+    if (regex.test(msg)) {
+      return msg.replace(regex, (_, p) => p)
+    }
+
+    return null
   }
 }
 

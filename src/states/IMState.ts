@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx'
 class IMState {
   public isOnline: boolean = false
   public converRenderFlag = false
+  public inviteRenderFlag = false
   constructor() {
     makeAutoObservable(this)
   }
@@ -11,6 +12,9 @@ class IMState {
   }
   public updateConv() {
     this.converRenderFlag = !this.converRenderFlag
+  }
+  public updateInvite() {
+    this.inviteRenderFlag = !this.inviteRenderFlag
   }
 }
 

@@ -1,5 +1,11 @@
 import './User.less'
-import { withRouter, Route, Switch, Redirect, RouteComponentProps } from 'react-router-dom'
+import {
+  withRouter,
+  Route,
+  Switch,
+  Redirect,
+  RouteComponentProps,
+} from 'react-router-dom'
 import { LeftOutlined } from '@ant-design/icons'
 import { ActivityIndicator } from 'antd-mobile'
 import { lazy, Suspense } from 'react'
@@ -27,7 +33,9 @@ const User = (props: RouteComponentProps) => {
       </header>
 
       <section className="user-content">
-        <Suspense fallback={<ActivityIndicator size="large" text="正在加载" toast />}>
+        <Suspense
+          fallback={<ActivityIndicator size="large" text="正在加载" toast />}
+        >
           <Switch>
             <Route path="/user/conversation" exact>
               <Conversation
@@ -43,6 +51,7 @@ const User = (props: RouteComponentProps) => {
                 onLoad={(title) => {
                   setTitle(title)
                 }}
+                imState={imState}
               />
             </Route>
             <Route>

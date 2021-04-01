@@ -1,10 +1,12 @@
 import { Modal } from 'antd-mobile'
-import { ConversationObject, MessageObject } from 'src/type'
+import { ConversationObject, InviteObject, MessageObject } from 'src/type'
 
 // 存放消息列表
 const TB_MESSAGE = 'tb_message'
 // 会话列表
 const TB_CONVERSATION = 'tb_conversation'
+// 好友添加消息列表
+const TB_INVITE = 'tb_invite'
 
 class DataBase {
   static DB_NAME = 'aha-db'
@@ -36,6 +38,7 @@ class DataBase {
           },
         ])
         createStore({ name: TB_CONVERSATION, options: { keyPath: 'conversationId' } })
+        createStore({ name: TB_INVITE, options: { keyPath: 'userId' } })
       }
       req.onsuccess = () => {
         this.db = req.result
@@ -85,14 +88,22 @@ class DataBase {
    */
   public addMessage(msgObj: MessageObject, convObj: ConversationObject) {
     return new Promise((reslove, reject) => {
-      const msgRequest = this.db.transaction(TB_MESSAGE, 'readwrite').objectStore(TB_MESSAGE).add(msgObj)
-      msgRequest.onsuccess = () => {
-        reslove(null)
-        this.db.transaction(TB_CONVERSATION, 'readwrite').objectStore(TB_CONVERSATION).put(convObj)
-      }
-      msgRequest.onerror = (err) => {
-        reject(err)
-      }
+      this.checkDb().then(() => {
+        const msgRequest = this.db
+          .transaction(TB_MESSAGE, 'readwrite')
+          .objectStore(TB_MESSAGE)
+          .add(msgObj)
+
+        msgRequest.onsuccess = () => {
+          reslove(null)
+          this.db.transaction(TB_CONVERSATION, 'readwrite').objectStore(TB_CONVERSATION).put(convObj)
+        }
+
+        msgRequest.onerror = (err) => {
+          reject(err)
+        }
+
+      })
     })
   }
 
@@ -106,19 +117,19 @@ class DataBase {
           .objectStore(TB_MESSAGE)
           .index('conversationId')
           .openCursor(convId, direction).onsuccess = function () {
-          const cursor = this.result
-          if (cursor) {
-            res.push({ id: cursor.primaryKey, ...cursor.value })
-            index++
-            if (index === count) {
+            const cursor = this.result
+            if (cursor) {
+              res.push({ id: cursor.primaryKey, ...cursor.value })
+              index++
+              if (index === count) {
+                reslove(res)
+                return
+              }
+              cursor.continue()
+            } else {
               reslove(res)
-              return
             }
-            cursor.continue()
-          } else {
-            reslove(res)
           }
-        }
       })
     })
   }
@@ -128,10 +139,11 @@ class DataBase {
     const res: ConversationObject[] = []
     return new Promise<ConversationObject[]>((reslove) => {
       this.checkDb().then(() => {
-        this.db
+        const msgRequest = this.db
           .transaction(TB_CONVERSATION, 'readonly')
           .objectStore(TB_CONVERSATION)
-          .openCursor(null, direction).onsuccess = function () {
+          .openCursor(null, direction)
+        msgRequest.onsuccess = function () {
           const cursor = this.result
           if (cursor) {
             res.push(cursor.value)
@@ -145,15 +157,116 @@ class DataBase {
             reslove(res)
           }
         }
+        msgRequest.onerror = () => {
+          reslove(res)
+        }
       })
     })
   }
+
+
+  public addInviteItem(userId: string, key: string) {
+    return new Promise((reslove) => {
+
+      this.checkDb().then(() => {
+        const msgRequest = this.db
+          .transaction(TB_INVITE, 'readwrite')
+          .objectStore(TB_INVITE)
+          .add({
+            userId,
+            isAccept: false,
+            key
+          })
+
+        msgRequest.onsuccess = () => {
+          reslove(null)
+
+        }
+        msgRequest.onerror = () => {
+          reslove(null)
+        }
+
+      })
+    })
+  }
+
+  public updateInviteItem(payload: InviteObject) {
+    return new Promise((reslove, reject) => {
+
+      this.checkDb().then(() => {
+        const msgRequest = this.db
+          .transaction(TB_INVITE, 'readwrite')
+          .objectStore(TB_INVITE)
+          .put(payload)
+
+        msgRequest.onsuccess = () => {
+          reslove(null)
+
+        }
+        msgRequest.onerror = (err) => {
+          reject(err)
+        }
+
+      })
+    })
+  }
+
+  public getInviteList() {
+    return new Promise<InviteObject[]>((reslove) => {
+      const res: InviteObject[] = []
+      this.checkDb().then(() => {
+
+        const request = this.db
+          .transaction(TB_INVITE, 'readonly')
+          .objectStore(TB_INVITE)
+          .openCursor(null, 'prev')
+
+        request.onsuccess = function () {
+          const cursor = this.result
+          if (cursor) {
+            res.push(cursor.value)
+            cursor.continue()
+          } else {
+            reslove(res)
+          }
+        }
+
+        request.onerror = () => {
+          reslove(res)
+        }
+      })
+    })
+  }
+
+  public deleteInviteItem(userId: string) {
+    return new Promise((reslove) => {
+
+      this.checkDb().then(() => {
+
+        const request = this.db
+          .transaction(TB_INVITE, 'readwrite')
+          .objectStore(TB_INVITE)
+          .delete(userId)
+
+        request.onsuccess = function () {
+          reslove(null)
+        }
+
+        request.onerror = () => {
+          reslove(null)
+        }
+      })
+    })
+  }
+
   private checkDb() {
     if (!this.db) {
       return this.openDb()
     }
     return Promise.resolve()
+
   }
+
 }
 
 const db = new DataBase()

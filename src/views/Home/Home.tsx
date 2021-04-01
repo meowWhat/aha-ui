@@ -24,7 +24,12 @@ import { IMState } from 'src/states/IMState'
 import { im } from 'src/api/IMDriver'
 import { isLogin } from 'src/api/login'
 import { staticData } from 'src/states/StaticData'
-import { addMsg, getConvId, getUserInfo } from 'src/api/cacheApi'
+import {
+  addMsg,
+  getConvId,
+  getUserInfo,
+  handleInviteMsg,
+} from 'src/api/cacheApi'
 
 const Linkman = lazy(() => import('./Linkman/Linkman'))
 const Message = lazy(() => import('./Message/Message'))
@@ -48,13 +53,18 @@ const Home = observer(({ imState, history }: HomeProps) => {
         }
       })
       .then((userInfo) => {
-        staticData.userInfo = userInfo
+        staticData.userInfo = userInfo!
         setLoginFlag(true)
         if (!imState.isOnline) {
           im.login(staticData.userId).then(() => {
             im.onMessage((msg, peerId) => {
-              const convId = getConvId(peerId)
-              addMsg(msg, peerId, staticData.userId, convId, imState)
+              const res = im.getInviteMsg(msg)
+              if (res) {
+                handleInviteMsg(res.id, res.key)
+              } else {
+                const convId = getConvId(peerId)
+                addMsg(msg, peerId, staticData.userId, convId, imState)
+              }
             })
           })
         }
