@@ -11,6 +11,7 @@ import { db } from 'src/api/indexDB'
 import { getUserInfo } from 'src/api/cacheApi'
 import { friendService } from 'src/services'
 import { im } from 'src/api/IMDriver'
+import { handleResMessage } from 'src/api/resHandle'
 
 interface FriendAdderProps {
   onLoad: (title: string) => void
@@ -175,7 +176,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
                         })
                       } else {
                         db.deleteInviteItem(userId).then(() => {
-                          Toast.fail(res.message)
+                          handleResMessage(res.message, '好友添加失败')
                           imState.updateInvite()
                         })
                       }

@@ -1,4 +1,4 @@
-import { Modal } from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 import { validate } from 'src/utils'
 
 /**
@@ -11,5 +11,5 @@ export const handleResMessage = (msg: any, info: string) => {
   if (validate.isString(msg)) {
     message = msg
   }
-  Modal.alert('', message)
+  Toast.fail(message)
 }
