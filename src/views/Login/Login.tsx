@@ -7,12 +7,13 @@ import {
   EyeInvisibleOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Button, Modal } from 'antd-mobile'
+import { Button } from 'antd-mobile'
 import { useState } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { Res } from 'src/type'
 import { withRouter } from 'react-router-dom'
 import { service, validate } from 'src/utils'
+import { handleErrorMsg } from 'src/api/resHandle'
 
 const Login = (props: RouteComponentProps) => {
   const [text, setText] = useState('')
@@ -90,10 +91,10 @@ const Login = (props: RouteComponentProps) => {
             loading={loading}
             onClick={() => {
               if (!validate.isEmail(text)) {
-                return Modal.alert('', '邮箱格式错误,请重新输入!')
+                return handleErrorMsg('邮箱格式错误,请重新输入!')
               }
               if (!validate.isString(pwd, 6)) {
-                return Modal.alert('', '密码格式错误,长度不得低于6位!')
+                return handleErrorMsg('密码格式错误,长度不得低于6位!')
               }
               setLoading(true)
               service
@@ -103,7 +104,10 @@ const Login = (props: RouteComponentProps) => {
                   if (res && res.statusCode === 200) {
                     props.history.push('/home')
                   } else {
-                    Modal.alert('', '用户名或密码不正确,请重新输入!')
+                    handleErrorMsg(
+                      res.message,
+                      '用户名或密码不正确,请重新输入!',
+                    )
                   }
                 })
                 .catch(() => {

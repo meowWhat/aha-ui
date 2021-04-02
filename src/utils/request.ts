@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Modal } from 'antd-mobile'
+import { handleErrorMsg } from 'src/api/resHandle'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -57,7 +57,7 @@ service.interceptors.response.use(
     } else if (message.includes('Request failed with status code')) {
       message = '系统接口' + message.substr(message.length - 3) + '异常'
     }
-    Modal.alert('', message)
+    handleErrorMsg(message)
     return Promise.reject(message)
   },
 )

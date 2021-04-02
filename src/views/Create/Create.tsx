@@ -3,7 +3,7 @@ import { Button, List, InputItem, Modal } from 'antd-mobile'
 import { useEffect, useState } from 'react'
 import { service, validate } from 'src/utils'
 import { Res } from 'src/type'
-import { handleResMessage } from 'src/api/resHandle'
+import { handleErrorMsg } from 'src/api/resHandle'
 
 const Create = (props: RouteComponentProps) => {
   const { email: pEmail = '' } = props.location.state as { email: string }
@@ -65,13 +65,13 @@ const Create = (props: RouteComponentProps) => {
           onClick={() => {
             // 校验
             if (!validate.isEmail(pEmail)) {
-              return Modal.alert('', '邮箱格式错误,请重新输入!')
+              return handleErrorMsg('邮箱格式错误,请重新输入!')
             }
             if (!validate.isString(pwd, 6)) {
-              return Modal.alert('', '密码格式错误,长度不得低于6位!')
+              return handleErrorMsg('密码格式错误,长度不得低于6位!')
             }
             if (!validate.isString(code)) {
-              return Modal.alert('', '验证码格式错误,不能为空!')
+              return handleErrorMsg('验证码格式错误,不能为空!')
             }
             // 请求
             setLoading(true)
@@ -93,7 +93,7 @@ const Create = (props: RouteComponentProps) => {
                       },
                     ])
                   } else {
-                    handleResMessage(data.message, '注册失败')
+                    handleErrorMsg(data.message, '注册失败')
                   }
                 })
                 .catch(() => {
@@ -116,7 +116,7 @@ const Create = (props: RouteComponentProps) => {
                       },
                     ])
                   } else {
-                    handleResMessage(data.message, '密码修改失败')
+                    handleErrorMsg(data.message, '密码修改失败')
                   }
                 })
                 .catch(() => {

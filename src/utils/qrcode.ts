@@ -1,5 +1,6 @@
 import QC from 'qrcode'
-import { Toast } from 'antd-mobile'
+import { handleErrorMsg } from 'src/api/resHandle'
+
 
 class QRCode {
 
@@ -8,7 +9,7 @@ class QRCode {
       const data = await QC.toDataURL(key)
       return data
     } catch (error) {
-      Toast.fail('二维码创建失败！')
+      handleErrorMsg(error, '二维码创建失败!')
     }
   }
 

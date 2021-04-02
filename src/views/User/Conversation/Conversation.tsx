@@ -20,6 +20,7 @@ import { staticData } from 'src/states/StaticData'
 import { observer } from 'mobx-react'
 import { IMState } from 'src/states/IMState'
 import { addMsg, getConvId, getFriendIdByConvId } from 'src/api/cacheApi'
+import { handleErrorMsg } from 'src/api/resHandle'
 const Item = Popover.Item
 
 interface ConversationProps extends RouteComponentProps {
@@ -40,8 +41,8 @@ interface ListItem {
 }
 const Conversation = observer((props: ConversationProps) => {
   const { onLoad, imState } = props
-  const { convId, nickName: friendName, avatar: friendAvatar } = props.history.location
-    .state as ConversationLocation
+  const { convId, nickName: friendName, avatar: friendAvatar } = props.history
+    .location.state as ConversationLocation
   const [list, setList] = useState<Array<ListItem>>([])
   // 控制当前状态为 输入 或 发送
   const [isInput, setIsInput] = useState(false)
@@ -108,7 +109,10 @@ const Conversation = observer((props: ConversationProps) => {
     }
   }, [onLoad, friendName, convId, imState.converRenderFlag])
   return (
-    <div id="conversation" className={classNames('bgc-gray', { 'conversation-expand': !isEmoji })}>
+    <div
+      id="conversation"
+      className={classNames('bgc-gray', { 'conversation-expand': !isEmoji })}
+    >
       {/* 聊天框列表 */}
       <div className="conversation-list">
         {list.map(({ from, text, id }) => {
@@ -176,10 +180,16 @@ const Conversation = observer((props: ConversationProps) => {
               im.sendMessage(value, peerId).then(
                 () => {
                   const convId = getConvId(peerId)
-                  addMsg({ messageType: 'TEXT', text: value }, staticData.userId, peerId, convId, imState)
+                  addMsg(
+                    { messageType: 'TEXT', text: value },
+                    staticData.userId,
+                    peerId,
+                    convId,
+                    imState,
+                  )
                 },
                 (error) => {
-                  Toast.info(error)
+                  handleErrorMsg(error, '消息发送失败')
                 },
               )
               setValue('')
@@ -222,7 +232,11 @@ const Conversation = observer((props: ConversationProps) => {
           </Popover>
         )}
         {/* 表情包扩展 */}
-        <div className={classNames('conversation-operation-emoji', { hidden: isEmoji })}>
+        <div
+          className={classNames('conversation-operation-emoji', {
+            hidden: isEmoji,
+          })}
+        >
           <Emoji></Emoji>
         </div>
       </div>

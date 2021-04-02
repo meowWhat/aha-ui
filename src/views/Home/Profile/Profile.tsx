@@ -1,12 +1,12 @@
-import { useEffect, useState, Fragment, useRef } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { staticData } from 'src/states/StaticData'
 import { qrCode } from 'src/utils/qrcode'
 import { UserInfo, Item, UserInfoProps } from 'src/components'
 import { RightOutlined } from '@ant-design/icons'
-import { NoticeBar, WhiteSpace, Modal, Toast } from 'antd-mobile'
+import { NoticeBar, WhiteSpace, Modal } from 'antd-mobile'
 import './Profile.less'
 import { profileService } from './ProfileService'
-import { handleResMessage } from 'src/api/resHandle'
+import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 
 const prompt = Modal.prompt
 const alert = Modal.alert
@@ -81,7 +81,7 @@ export default function Profile() {
                 text: '修改',
                 onPress: (value) => {
                   if (value === '') {
-                    Toast.fail('昵称不能为空!')
+                    handleErrorMsg('昵称不能为空')
                     return
                   }
 
@@ -94,9 +94,9 @@ export default function Profile() {
                       // 修改静态数据
                       staticData.userInfo.nickname = value
                       setDataSource(newDataSource)
-                      Toast.success('昵称更新成功!')
+                      handleSuccessMsg('昵称更新成功!')
                     } else {
-                      handleResMessage(res.message, '昵称更新失败!')
+                      handleErrorMsg(res.message, '昵称更新失败!')
                     }
                   })
                 },
@@ -126,9 +126,9 @@ export default function Profile() {
                     if (res.statusCode === 200) {
                       staticData.userInfo.sign = value
                       setSign(value)
-                      Toast.success('个性签名修改成功')
+                      handleSuccessMsg('个性签名修改成功!')
                     } else {
-                      handleResMessage(res.message, '个性前面修改失败')
+                      handleErrorMsg(res.message, '个性前面修改失败')
                     }
                   })
                 },
@@ -155,7 +155,7 @@ export default function Profile() {
                 text: '修改',
                 onPress: (value) => {
                   if (value === '') {
-                    Toast.fail('链接不能为空!')
+                    handleErrorMsg('链接不能为空!')
                     return
                   }
 
@@ -168,9 +168,9 @@ export default function Profile() {
                       // 修改静态数据
                       staticData.userInfo.avatar = value
                       setDataSource(newDataSource)
-                      Toast.success('头像更新成功!')
+                      handleSuccessMsg('头像更新成功!')
                     } else {
-                      handleResMessage(res.message, '头像更新失败!')
+                      handleErrorMsg(res.message, '头像更新失败!')
                     }
                   })
                 },

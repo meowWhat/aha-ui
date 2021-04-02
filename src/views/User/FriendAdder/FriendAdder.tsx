@@ -11,7 +11,7 @@ import { db } from 'src/api/indexDB'
 import { getUserInfo } from 'src/api/cacheApi'
 import { friendService } from 'src/services'
 import { im } from 'src/api/IMDriver'
-import { handleResMessage } from 'src/api/resHandle'
+import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 
 interface FriendAdderProps {
   onLoad: (title: string) => void
@@ -49,12 +49,12 @@ const FriendAdder = observer((props: FriendAdderProps) => {
         const friendId: string = res.message.friendId + ''
         const key: string = res.message.key
         await im.inviteFriend(friendId, key)
-        Toast.success('消息已发送!')
+        handleSuccessMsg('消息已发送!')
       } else {
-        Toast.fail(res.message)
+        handleErrorMsg(res.message, '消息发送失败')
       }
     } catch (error) {
-      Toast.fail('好友邀请失败,请稍后再试~~')
+      handleErrorMsg(error, '好友邀请失败,请稍后再试~~')
     }
   }
 
@@ -105,7 +105,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
             ref={qr}
             delay={300}
             onError={() => {
-              Toast.info('您的系统不支持二维码扫描!')
+              handleErrorMsg('您的系统不支持二维码扫描!')
               setIsShowQrScan(false)
             }}
             onScan={(data) => {
@@ -134,7 +134,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
             className="aha-friend-adder-list-item"
             onClick={() => {
               if (hasError) {
-                Toast.fail('邮箱格式错误,请重新输入！', 2)
+                handleErrorMsg('邮箱格式错误,请重新输入！')
               }
             }}
           >
@@ -171,12 +171,12 @@ const FriendAdder = observer((props: FriendAdderProps) => {
                           isAccept: true,
                           key,
                         }).then(() => {
-                          Toast.success(`成功添加好友 ${nickName} `)
+                          handleSuccessMsg(`成功添加好友 ${nickName} `)
                           imState.updateInvite()
                         })
                       } else {
                         db.deleteInviteItem(userId).then(() => {
-                          handleResMessage(res.message, '好友添加失败')
+                          handleErrorMsg(res.message, '好友添加失败')
                           imState.updateInvite()
                         })
                       }

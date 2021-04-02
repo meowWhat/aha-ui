@@ -1,6 +1,6 @@
 import AgoraRTM, { RtmClient, RtmMessage } from 'agora-rtm-sdk'
-import { Modal } from 'antd-mobile'
 import { imState } from 'src/states/IMState'
+import { handleErrorMsg } from './resHandle'
 
 
 class IM {
@@ -37,8 +37,7 @@ class IM {
           reslove(null)
         },
         (err) => {
-          console.log(`user ${uid} 登录失败,错误信息:\n${err}`)
-          Modal.alert('', '抱歉!IM 服务器繁忙,请稍后再试!')
+          handleErrorMsg(err, '抱歉!IM 服务器繁忙,请稍后再试!')
           reject()
         },
       )

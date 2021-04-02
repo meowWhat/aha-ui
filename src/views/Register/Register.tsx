@@ -1,10 +1,10 @@
 import './Register.less'
-import { Button, List, InputItem, Radio, Modal } from 'antd-mobile'
+import { Button, List, InputItem, Radio } from 'antd-mobile'
 import { useEffect, useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Res } from 'src/type'
 import { service, validate } from 'src/utils'
-import { handleResMessage } from 'src/api/resHandle'
+import { handleErrorMsg } from 'src/api/resHandle'
 
 const Register = (props: RouteComponentProps) => {
   const { email: pEmail } = props.location.state as { email: string }
@@ -41,7 +41,8 @@ const Register = (props: RouteComponentProps) => {
             >
               <Radio checked={checked} />
             </span>
-            &nbsp;已阅读并同意<span className="blue">服务协议</span>和<span className="blue">隐私政策</span>
+            &nbsp;已阅读并同意<span className="blue">服务协议</span>和
+            <span className="blue">隐私政策</span>
           </span>
         </header>
         <List>
@@ -71,10 +72,10 @@ const Register = (props: RouteComponentProps) => {
         <Button
           onClick={() => {
             if (!validate.isEmail(email)) {
-              return Modal.alert('', '邮箱格式错误,请重新输入!')
+              return handleErrorMsg('邮箱格式错误,请重新输入!')
             }
             if (!validate.isString(text)) {
-              return Modal.alert('', '验证码格式错误,不能为空!')
+              return handleErrorMsg('验证码格式错误,不能为空!')
             }
             setLoading(true)
             service
@@ -88,7 +89,7 @@ const Register = (props: RouteComponentProps) => {
                     isCreate,
                   })
                 } else {
-                  handleResMessage(data.message, '验证码发送失败,请稍后再试')
+                  handleErrorMsg(data.message, '验证码发送失败,请稍后再试')
                 }
               })
               .catch(() => {
