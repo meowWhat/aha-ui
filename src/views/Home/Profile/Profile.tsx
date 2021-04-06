@@ -59,7 +59,7 @@ export default function Profile() {
           alert(
             '二维码',
             <div>
-              <img src={qrCodeUrl} alt="二维码" style={{ width: '80%' }} />
+              <img src={qrCodeUrl} alt="二维码" />
             </div>,
             [{ text: '关闭' }],
           )

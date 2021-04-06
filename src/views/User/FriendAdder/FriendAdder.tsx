@@ -136,6 +136,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
               if (hasError) {
                 handleErrorMsg('邮箱格式错误,请重新输入！')
               }
+              handleFriendAdd(value)
             }}
           >
             <ItalicOutlined /> &nbsp;&nbsp;&nbsp;输入邮箱添加
