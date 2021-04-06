@@ -1,5 +1,5 @@
 import './FriendAdder.less'
-import { List, InputItem, Toast, Result } from 'antd-mobile'
+import { List, InputItem, Result } from 'antd-mobile'
 import { useEffect, useRef, useState } from 'react'
 import { ScanOutlined, ItalicOutlined } from '@ant-design/icons'
 import validator from 'src/utils/validator'
@@ -194,6 +194,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
               <img
                 src="https://gw.alipayobjects.com/zos/rmsportal/HWuSTipkjJRfTWekgTUG.svg"
                 className="spe am-icon am-icon-md"
+                alt=""
               />
             }
             message="暂无好友申请"

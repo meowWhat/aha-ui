@@ -4,6 +4,7 @@ import { generateBig_1 } from 'src/utils/word'
 import { useState, useCallback, useEffect } from 'react'
 import { Dict } from 'src/type'
 import { withRouter, RouteComponentProps } from 'react-router'
+import { friendService } from 'src/services'
 
 export interface LinkmanListItem {
   avatar: string
@@ -19,152 +20,14 @@ const Linkman = (props: RouteComponentProps) => {
   const [active, setActive] = useState(1)
   const [dataSource, setDataSource] = useState<Dict<LinkmanListItem[]>>({})
   useEffect(() => {
-    setDataSource({
-      a: [
-        {
-          avatar: img,
-          id: '0',
-          nickName: '一号好友',
-        },
-        {
-          avatar: img,
-          id: '1',
-          nickName: '二号好友',
-        },
-        {
-          avatar: img,
-          id: '2',
-          nickName: '三号好友',
-        },
-        {
-          avatar: img,
-          id: '3',
-          nickName: '4号好友',
-        },
-        {
-          avatar: img,
-          id: '4',
-          nickName: '可聊天用户',
-        },
-        {
-          avatar: img,
-          id: '5',
-          nickName: '6号好友',
-        },
-      ],
-      b: [
-        {
-          avatar: img,
-          id: '6',
-          nickName: '一号好友',
-        },
-        {
-          avatar: img,
-          id: '7',
-          nickName: '二号好友',
-        },
-        {
-          avatar: img,
-          id: '8',
-          nickName: '三号好友',
-        },
-        {
-          avatar: img,
-          id: '9',
-          nickName: '4号好友',
-        },
-        {
-          avatar: img,
-          id: '10',
-          nickName: '5号好友',
-        },
-        {
-          avatar: img,
-          id: '11',
-          nickName: '6号好友',
-        },
-      ],
-      h: [
-        {
-          avatar: img,
-          id: '12',
-          nickName: '一号好友',
-        },
-        {
-          avatar: img,
-          id: '13',
-          nickName: '三号好友',
-        },
-        {
-          avatar: img,
-          id: '15',
-          nickName: '4号好友',
-        },
-        {
-          avatar: img,
-          id: '16',
-          nickName: '5号好友',
-        },
-        {
-          avatar: img,
-          id: '17',
-          nickName: '6号好友',
-        },
-      ],
-      g: [
-        {
-          avatar: img,
-          id: '22',
-          nickName: '一号好友',
-        },
-        {
-          avatar: img,
-          id: '23',
-          nickName: '三号好友',
-        },
-        {
-          avatar: img,
-          id: '25',
-          nickName: '4号好友',
-        },
-        {
-          avatar: img,
-          id: '26',
-          nickName: '5号好友',
-        },
-        {
-          avatar: img,
-          id: '27',
-          nickName: '6号好友',
-        },
-      ],
-      z: [
-        {
-          avatar: img,
-          id: '31',
-          nickName: '一号好友',
-        },
-        {
-          avatar: img,
-          id: '33',
-          nickName: '三号好友',
-        },
-        {
-          avatar: img,
-          id: '35',
-          nickName: '4号好友',
-        },
-        {
-          avatar: img,
-          id: '36',
-          nickName: '5号好友',
-        },
-        {
-          avatar: img,
-          id: '37',
-          nickName: '6号好友',
-        },
-      ],
+    friendService.getFriends().then((res) => {
+      if (res.statusCode === 200) {
+        friendService
+          .transformFriendList(res.message as any)
+          .then((dataSource) => {
+            setDataSource(dataSource)
+          })
+      }
     })
   }, [])
   const getList = useCallback(() => {
@@ -175,7 +38,9 @@ const Linkman = (props: RouteComponentProps) => {
         <div key={key}>
           <h2 className="linkman-title">{key.toLocaleUpperCase()}</h2>
           {list.map(({ id, avatar, nickName, address, email, sex }, idx) => {
-            const className = `linkman-item ${idx === list.length - 1 ? 'linkman-item-last' : ''}`
+            const className = `linkman-item ${
+              idx === list.length - 1 ? 'linkman-item-last' : ''
+            }`
             return (
               <div
                 key={id}
@@ -210,7 +75,9 @@ const Linkman = (props: RouteComponentProps) => {
             onClick={() => {
               setActive(index)
               const _index = dataSourceKeys.indexOf(word.toLocaleLowerCase())
-              const targetDom = document.getElementsByClassName('linkman-title')[_index] as any
+              const targetDom = document.getElementsByClassName(
+                'linkman-title',
+              )[_index] as any
               // 页面滚动
               let start: number = 0
               if (targetDom) {

@@ -1,6 +1,6 @@
 import { RtmMessage } from 'agora-rtm-sdk'
 import { staticData } from 'src/states/StaticData'
-import { ApiUserInfo, ConversationObject, MessageObject, Res } from 'src/type'
+import { ApiUserInfo, ConversationObject, MessageObject, Res, ApiFriendInfo } from 'src/type'
 import { db } from 'src/api/indexDB'
 import { imState, IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
@@ -9,7 +9,6 @@ import dayjs from 'dayjs'
 export const addMsg = (
   msg: RtmMessage,
   sendId: string,
-  peerId: string,
   conversationId: string,
   imState: IMState,
 ) => {
@@ -36,7 +35,6 @@ export const addMsg = (
   }
   const convObj: ConversationObject = {
     conversationId,
-    peerId,
     text,
     date: dayjs().format('MM月DD日 hh:mm'),
   }
@@ -48,21 +46,38 @@ export const addMsg = (
 export const getUserInfo: (id: string) => Promise<ApiUserInfo> = async (id: string) => {
   const data = window.localStorage.getItem(id)
   if (data) {
-    setTimeout(() => {
-      service
-        .post<any, Res>('/user/info', { id })
-        .then((data) => {
-          if (data.statusCode === 200) {
-            window.localStorage.setItem(id, JSON.stringify(data.message[0]))
-          }
-        })
-    })
+    service
+      .post<any, Res>('/user/info', { id })
+      .then((data) => {
+        if (data.statusCode === 200) {
+          window.localStorage.setItem(id, JSON.stringify(data.message[0]))
+        }
+      })
     return JSON.parse(data)
   } else {
     const data = await service.post<any, Res>('/user/info', { id })
     if (data.statusCode === 200) {
       window.localStorage.setItem(id, JSON.stringify(data.message[0]))
       return data.message[0]
+    }
+  }
+}
+export const getFriendInfo: (id: string) => Promise<ApiFriendInfo> = async (id: string) => {
+  const data = window.localStorage.getItem(id)
+  if (data) {
+    service
+      .post<any, Res>(`/friend/info`, { id })
+      .then((data) => {
+        if (data.statusCode === 200) {
+          window.localStorage.setItem(id, JSON.stringify(data.message))
+        }
+      })
+    return JSON.parse(data)
+  } else {
+    const data = await service.post<any, Res>('/friend/info', { id })
+    if (data.statusCode === 200) {
+      window.localStorage.setItem(id, JSON.stringify(data.message))
+      return data.message
     }
   }
 }

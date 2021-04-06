@@ -7,7 +7,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useRef } from 'react'
 import { Modal, ActivityIndicator } from 'antd-mobile'
 import { ConversationLocation } from 'src/views/User/Conversation/Conversation'
-import { getUserInfo } from 'src/api/cacheApi'
+import { getFriendIdByConvId, getFriendInfo } from 'src/api/cacheApi'
 import { LOADING } from 'src/api/msgConst'
 import { db } from 'src/api/indexDB'
 
@@ -25,7 +25,9 @@ interface ListItem {
 }
 
 const Message = observer(({ imState, history }: MessageProps) => {
-  const ref = useRef<{ startTime: number; timer?: NodeJS.Timeout }>({ startTime: 0 })
+  const ref = useRef<{ startTime: number; timer?: NodeJS.Timeout }>({
+    startTime: 0,
+  })
   const [list, setList] = useState<Array<ListItem>>([])
   const [loading, setLoading] = useState(true)
   const longPress = (convId: string) => {
@@ -56,16 +58,17 @@ const Message = observer(({ imState, history }: MessageProps) => {
     db.getConvList()
       .then((res) => {
         return Promise.all(
-          res.map(({ conversationId, peerId, text, date }) => {
+          res.map(({ conversationId, text, date }) => {
             return new Promise<ListItem>((reslove) => {
+              const friendId = getFriendIdByConvId(conversationId)
               const res = {
                 text,
                 conversationId,
                 avatar: 'error',
-                nickName: peerId,
+                nickName: friendId,
                 date,
               }
-              getUserInfo(peerId)
+              getFriendInfo(friendId)
                 .then((data) => {
                   if (data) {
                     res.avatar = data.avatar
@@ -94,7 +97,10 @@ const Message = observer(({ imState, history }: MessageProps) => {
               key={conversationId}
               onTouchStart={(e) => {
                 ref.current.startTime = Date.now()
-                ref.current.timer = setTimeout(longPress.bind(conversationId) as any, 700)
+                ref.current.timer = setTimeout(
+                  longPress.bind(conversationId) as any,
+                  700,
+                )
                 e.preventDefault()
               }}
               onTouchMove={() => {

@@ -63,7 +63,7 @@ const Home = observer(({ imState, history }: HomeProps) => {
                 handleInviteMsg(res.id, res.key)
               } else {
                 const convId = getConvId(peerId)
-                addMsg(msg, peerId, staticData.userId, convId, imState)
+                addMsg(msg, peerId, convId, imState)
               }
             })
           })

@@ -12,7 +12,7 @@ import { useEffect, useState, useRef } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { MsgBox, Emoji } from 'src/components'
 import './Conversation.less'
-import { Popover, Toast } from 'antd-mobile'
+import { Popover } from 'antd-mobile'
 import classNames from 'classnames'
 import { im } from 'src/api/IMDriver'
 import { db } from 'src/api/indexDB'
@@ -183,7 +183,6 @@ const Conversation = observer((props: ConversationProps) => {
                   addMsg(
                     { messageType: 'TEXT', text: value },
                     staticData.userId,
-                    peerId,
                     convId,
                     imState,
                   )

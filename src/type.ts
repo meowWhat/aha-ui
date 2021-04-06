@@ -16,7 +16,6 @@ export interface MessageObject {
 
 export interface ConversationObject {
   conversationId: string
-  peerId: string
   text: string
   date: string
 }
@@ -31,6 +30,11 @@ export interface ApiUserInfo {
   address: string
   sign: string
   comment: string
+}
+
+export interface ApiFriendInfo extends ApiUserInfo {
+  remark: null | string
+  role: number
 }
 
 export interface InviteObject {
