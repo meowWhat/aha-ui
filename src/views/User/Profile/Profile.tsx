@@ -14,7 +14,7 @@ import { getConvId } from 'src/api/cacheApi'
 import { UserInfo } from 'src/components'
 
 export default function Profile(props: RouteComponentProps) {
-  const { avatar, nickName, address, email, sex, id } = props.location
+  const { avatar, nickName, address, email, sex, id, sign } = props.location
     .state as LinkmanListItem
   return (
     <div className="user-profile">
@@ -24,7 +24,7 @@ export default function Profile(props: RouteComponentProps) {
           avatar,
           address,
           email,
-          sex: sex === '0' ? '0' : '1',
+          sex: sex ===0 ? 0 : 1,
         }}
       />
       <Item
@@ -35,7 +35,7 @@ export default function Profile(props: RouteComponentProps) {
               icon={<Fragment></Fragment>}
               marqueeProps={{ loop: true }}
             >
-              众里寻他千百asdasdasdasdasd
+              {sign}
             </NoticeBar>
           </div>
         }

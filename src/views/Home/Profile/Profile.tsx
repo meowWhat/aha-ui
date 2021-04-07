@@ -5,11 +5,12 @@ import { UserInfo, Item, UserInfoProps } from 'src/components'
 import { RightOutlined } from '@ant-design/icons'
 import { NoticeBar, WhiteSpace, Modal } from 'antd-mobile'
 import './Profile.less'
-import { profileService } from './ProfileService'
+import { profileService } from 'src/services'
 import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 
 const prompt = Modal.prompt
 const alert = Modal.alert
+const operation = Modal.operation
 
 interface dataSource extends UserInfoProps {}
 
@@ -23,7 +24,7 @@ export default function Profile() {
       email: staticData.userInfo.email,
       avatar: staticData.userInfo.avatar,
       nickName: staticData.userInfo.nickname,
-      sex: staticData.userInfo.sex === '0' ? '0' : '1',
+      sex: staticData.userInfo.sex === 0 ? 0 : 1,
     },
   })
 
@@ -35,6 +36,25 @@ export default function Profile() {
     })
   }, [])
 
+  const handleSexChange = (sex: 0 | 1) => {
+    profileService
+      .updateUserSex(sex)
+      .then((res) => {
+        if (res.statusCode === 200) {
+          const newDataSource = {
+            info: dataSource.info,
+          }
+          newDataSource.info.sex = sex
+          // 修改静态数据
+          staticData.userInfo.sex = sex
+          setDataSource(newDataSource)
+          handleSuccessMsg('修改性别成功')
+        } else {
+          handleErrorMsg(res.message, '修改性别失败')
+        }
+      })
+      .catch((err) => handleErrorMsg(err, '修改性别失败'))
+  }
   return (
     <div className="profile">
       <UserInfo info={dataSource.info} />
@@ -109,6 +129,30 @@ export default function Profile() {
         }}
       />
       <Item
+        content={<span>更改性别</span>}
+        right={<RightOutlined />}
+        onClick={() => {
+          operation([
+            {
+              text: '切换为男生',
+              onPress: () => {
+                if (dataSource.info.sex !== 1) {
+                  handleSexChange(1)
+                }
+              },
+            },
+            {
+              text: '切换为女生',
+              onPress: () => {
+                if (dataSource.info.sex !== 0) {
+                  handleSexChange(0)
+                }
+              },
+            },
+          ])
+        }}
+      />
+      <Item
         content={<span>修改个性签名</span>}
         right={<RightOutlined />}
         onClick={() => {
@@ -161,13 +205,6 @@ export default function Profile() {
 
                   profileService.updateAvatar(value).then((res) => {
                     if (res.statusCode === 200) {
-                      const newDataSource = {
-                        info: dataSource.info,
-                      }
-                      newDataSource.info.avatar = value
-                      // 修改静态数据
-                      staticData.userInfo.avatar = value
-                      setDataSource(newDataSource)
                       handleSuccessMsg('头像更新成功!')
                     } else {
                       handleErrorMsg(res.message, '头像更新失败!')

@@ -3,7 +3,7 @@ import service from 'src/utils/request'
 
 class ProfileService {
 
-  private updateUserInfo(data: Dict<string>) {
+  private updateUserInfo(data: Dict<string | number>) {
     return service.put<any, Res>('/user/info', data)
   }
 
@@ -19,6 +19,10 @@ class ProfileService {
     return this.updateUserInfo({
       avatar
     })
+  }
+
+  public updateUserSex(sex: 0 | 1) {
+    return this.updateUserInfo({ sex })
   }
 
 }

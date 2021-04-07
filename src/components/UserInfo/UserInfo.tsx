@@ -5,7 +5,7 @@ export interface UserInfoProps {
   info: {
     avatar: string
     nickName: string
-    sex?: '0' | '1'
+    sex?: 0 | 1
     email?: string
     address?: string
   }
@@ -15,7 +15,7 @@ export default function UserInfo(props: UserInfoProps) {
   const {
     avatar,
     nickName,
-    sex = '1',
+    sex = 1,
     email = '秘密',
     address = '秘密',
   } = props.info
@@ -30,9 +30,9 @@ export default function UserInfo(props: UserInfoProps) {
           </span>
           <span
             className="user-profile-info-desp-sex"
-            style={{ color: sex === '0' ? 'blue' : 'pink' }}
+            style={{ color: sex === 1 ? 'blue' : 'pink' }}
           >
-            {sex === '0' ? <ManOutlined /> : <WomanOutlined />}
+            {sex === 1 ? <ManOutlined /> : <WomanOutlined />}
           </span>
         </div>
         <span className="user-profile-info-desp-email gray">

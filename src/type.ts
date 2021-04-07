@@ -24,7 +24,7 @@ export interface ApiUserInfo {
   id: string
   nickname: string
   avatar: string
-  sex: string
+  sex: 0 | 1
   birth: string
   email: string
   address: string

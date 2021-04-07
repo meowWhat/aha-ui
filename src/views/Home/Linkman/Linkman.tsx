@@ -11,7 +11,8 @@ export interface LinkmanListItem {
   nickName: string
   address?: string
   email?: string
-  sex?: string
+  sex?: 0 | 1
+  sign?: string
 }
 const wordList = generateBig_1()
 let dataSourceKeys: string[]

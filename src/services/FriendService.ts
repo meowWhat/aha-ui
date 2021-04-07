@@ -40,7 +40,8 @@ class FriendService {
         nickName: res.remark || res.nickname,
         address: res.address,
         email: res.email,
-        sex: res.sex
+        sex: res.sex,
+        sign: res.sign
       }
       if (!result[nameKey]) {
         result[nameKey] = []
