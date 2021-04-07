@@ -11,13 +11,15 @@ import { ActivityIndicator } from 'antd-mobile'
 import { lazy, Suspense } from 'react'
 import { useState } from 'react'
 import { imState } from 'src/states/IMState'
-
+import { useValidate } from 'src/hooks'
 const Conversation = lazy(() => import('./Conversation/Conversation'))
 const Profile = lazy(() => import('./Profile/Profile'))
 const FriendAdder = lazy(() => import('./FriendAdder/FriendAdder'))
 
 const User = (props: RouteComponentProps) => {
   const [title, setTitle] = useState('')
+  useValidate(imState)
+
   return (
     <div id="user">
       <header className="user-nav bgc-gray">

@@ -1,5 +1,11 @@
 import { Home, Login, Register, Create, NotFound, User } from './views'
-import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
+import {
+  Redirect,
+  Route,
+  RouteComponentProps,
+  Switch,
+  withRouter,
+} from 'react-router-dom'
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { Progress } from './components'
 import { debounce } from './utils'
@@ -31,7 +37,9 @@ function App(props: RouteComponentProps) {
   }, [props.history])
 
   return (
-    <Suspense fallback={<ActivityIndicator size="large" text="正在加载" toast />}>
+    <Suspense
+      fallback={<ActivityIndicator size="large" text="正在加载" toast />}
+    >
       <Switch>
         <Route path="/login" exact>
           <Login></Login>
