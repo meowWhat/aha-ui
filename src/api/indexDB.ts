@@ -8,7 +8,7 @@ const TB_CONVERSATION = 'tb_conversation'
 // 好友添加消息列表
 const TB_INVITE = 'tb_invite'
 
-class DataBase {
+export class DataBase {
   static DB_NAME = 'aha-db'
   static DB_VERSION = 1
   private db!: IDBDatabase
@@ -269,6 +269,5 @@ class DataBase {
 
 }
 
-const db = new DataBase()
+export const db = new DataBase()
 
-export { db }

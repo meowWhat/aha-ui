@@ -3,10 +3,11 @@ import { staticData } from 'src/states/StaticData'
 import { qrCode } from 'src/utils/qrcode'
 import { UserInfo, Item, UserInfoProps } from 'src/components'
 import { RightOutlined } from '@ant-design/icons'
-import { NoticeBar, WhiteSpace, Modal } from 'antd-mobile'
+import { NoticeBar, WhiteSpace, Modal, Button } from 'antd-mobile'
 import './Profile.less'
 import { profileService } from 'src/services'
 import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
+import { removeAll } from 'src/api/cacheApi'
 
 const prompt = Modal.prompt
 const alert = Modal.alert
@@ -219,6 +220,33 @@ export default function Profile() {
           )
         }}
       />
+      <WhiteSpace size="sm"></WhiteSpace>
+      <Button
+        onClick={() => {
+          alert(
+            '登出',
+            '为了确保用户安全,登出会移除所有消息记录,是否继续操作?',
+            [
+              { text: '取消' },
+              {
+                text: '继续',
+                onPress: () => {
+                  removeAll().then((res) => {
+                    if (res === true) {
+                      window.location.replace('/login')
+                    } else {
+                      handleErrorMsg(res, '退出登录失败,请稍后再试！')
+                    }
+                  })
+                },
+              },
+            ],
+          )
+        }}
+      >
+        退出登录
+      </Button>
+      <WhiteSpace size="sm"></WhiteSpace>
     </div>
   )
 }

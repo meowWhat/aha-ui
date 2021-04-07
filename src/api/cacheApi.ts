@@ -1,7 +1,7 @@
 import { RtmMessage } from 'agora-rtm-sdk'
 import { staticData } from 'src/states/StaticData'
 import { ApiUserInfo, ConversationObject, MessageObject, Res, ApiFriendInfo } from 'src/type'
-import { db } from 'src/api/indexDB'
+import { DataBase, db } from 'src/api/indexDB'
 import { imState, IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
 import dayjs from 'dayjs'
@@ -102,4 +102,34 @@ export const handleInviteMsg = (friendId: string, key: string) => {
   db.addInviteItem(friendId, key).then(() => {
     imState.updateInvite()
   })
+}
+
+/**
+ * 移除所有缓存
+ */
+export const removeAll = async () => {
+  const firstStep = await new Promise((reslove) => {
+    localStorage.clear()
+    sessionStorage.clear()
+    const res = indexedDB.deleteDatabase(DataBase['DB_NAME'])
+    res.onsuccess = () => {
+      reslove(true)
+    }
+    res.onerror = () => {
+      reslove(false)
+    }
+    res.onblocked = (event) => {
+      indexedDB.deleteDatabase(DataBase['DB_NAME'])
+      reslove(true)
+    }
+  })
+  if (!firstStep) {
+    return false
+  }
+
+  const res = await service.get<any, Res>('/user/logout')
+  if (res.statusCode === 200) {
+    return true
+  }
+  return res.message
 }
