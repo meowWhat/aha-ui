@@ -21,6 +21,7 @@ import { observer } from 'mobx-react'
 import { IMState } from 'src/states/IMState'
 import { addMsg, getConvId, getFriendIdByConvId } from 'src/api/cacheApi'
 import { handleErrorMsg } from 'src/api/resHandle'
+import { friendService } from 'src/services'
 const Item = Popover.Item
 
 interface ConversationProps extends RouteComponentProps {
@@ -175,10 +176,13 @@ const Conversation = observer((props: ConversationProps) => {
         {isInput ? (
           // 发送按钮
           <SendOutlined
-            onClick={() => {
-              const peerId = getFriendIdByConvId(convId)
-              im.sendMessage(value, peerId).then(
-                () => {
+            onClick={async () => {
+              textArea.current && textArea.current.focus()
+              try {
+                const peerId = getFriendIdByConvId(convId)
+                const isFriend = await friendService.isFriend(peerId)
+                if (isFriend) {
+                  await im.sendMessage(value, peerId)
                   const convId = getConvId(peerId)
                   addMsg(
                     { messageType: 'TEXT', text: value },
@@ -186,14 +190,14 @@ const Conversation = observer((props: ConversationProps) => {
                     convId,
                     imState,
                   )
-                },
-                (error) => {
-                  handleErrorMsg(error, '消息发送失败')
-                },
-              )
-              setValue('')
-              setIsInput(false)
-              textArea.current && textArea.current.focus()
+                  setValue('')
+                  setIsInput(false)
+                } else {
+                  handleErrorMsg('抱歉,该用户不是您的好友~')
+                }
+              } catch (error) {
+                handleErrorMsg(error, '消息发送失败！')
+              }
             }}
           />
         ) : (

@@ -67,6 +67,22 @@ class FriendService {
       role: payload.role
     })
   }
+
+  public isFriend(friendId: string) {
+    return new Promise((reslove, reject) => {
+      service.get<any, Res>(`/friend/${friendId}`)
+        .then((res) => {
+          if (res.statusCode === 200) {
+            reslove(true)
+          } else {
+            reslove(false)
+          }
+        }).catch((err) => {
+          reject(err)
+        })
+
+    })
+  }
 }
 
 
