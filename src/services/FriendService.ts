@@ -29,8 +29,10 @@ class FriendService {
     await Promise.all(list.map(async ({ friend_id, remark }) => {
       const res = await getFriendInfo(friend_id + '')
       let nameKey = getFirstLetter(remark || res.nickname)
-      if (!/[a-z]/.test(nameKey)) {
+      if (!(/[a-zA-Z]/.test(nameKey))) {
         nameKey = '#'
+      } else {
+        nameKey = nameKey.toLocaleUpperCase()
       }
       const value = {
         avatar: res.avatar,

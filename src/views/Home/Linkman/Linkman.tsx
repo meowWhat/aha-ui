@@ -1,5 +1,4 @@
 import './Linkman.less'
-import img from 'src/img/logo.jpg'
 import { generateBig_1 } from 'src/utils/word'
 import { useState, useCallback, useEffect } from 'react'
 import { Dict } from 'src/type'
