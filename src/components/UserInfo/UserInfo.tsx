@@ -18,7 +18,7 @@ export default function UserInfo(props: UserInfoProps) {
     nickName,
     sex = 1,
     email = '秘密',
-    address = '秘密',
+    // address = '秘密',
     remark,
   } = props.info
 
