@@ -19,7 +19,12 @@ import { db } from 'src/api/indexDB'
 import { staticData } from 'src/states/StaticData'
 import { observer } from 'mobx-react'
 import { IMState } from 'src/states/IMState'
-import { addMsg, getConvId, getFriendIdByConvId } from 'src/api/cacheApi'
+import {
+  addMsg,
+  getConvId,
+  getFriendIdByConvId,
+  getFriendInfo,
+} from 'src/api/cacheApi'
 import { handleErrorMsg } from 'src/api/resHandle'
 import { friendService } from 'src/services'
 const Item = Popover.Item
@@ -130,7 +135,20 @@ const Conversation = observer((props: ConversationProps) => {
             )
           }
           return (
-            <MsgBox avatar={friendAvatar} nickName={friendName} key={id}>
+            <MsgBox
+              avatar={friendAvatar}
+              nickName={friendName}
+              key={id}
+              onAvatarClick={async () => {
+                const friendId = getFriendIdByConvId(convId)
+                const friendInfo = await getFriendInfo(friendId)
+
+                props.history.push('/user/profile', {
+                  nickName: friendInfo.nickname,
+                  ...friendInfo,
+                })
+              }}
+            >
               {text}
             </MsgBox>
           )

@@ -5,8 +5,13 @@ interface MsgBoxInterface {
   nickName: string
   type?: 'self' | 'other'
   children?: any
+  onAvatarClick?: () => void
 }
-const MsgContent = (props: { type: 'other' | 'self'; children: any; className?: string }) => {
+const MsgContent = (props: {
+  type: 'other' | 'self'
+  children: any
+  className?: string
+}) => {
   const { type, children, className } = props
   const initClassName = () => {
     const _class = 'msg-content ' + (className || '')
@@ -20,11 +25,18 @@ const MsgContent = (props: { type: 'other' | 'self'; children: any; className?: 
 }
 
 const MsgBox = (props: MsgBoxInterface) => {
-  const { type = 'other', children, avatar, nickName } = props
+  const { type = 'other', children, avatar, nickName, onAvatarClick } = props
   if (type === 'other') {
     return (
       <div className="msg-box">
-        <img src={avatar} alt="头像" className="msg-box-avatar" />
+        <img
+          src={avatar}
+          alt="头像"
+          className="msg-box-avatar"
+          onClick={() => {
+            onAvatarClick && onAvatarClick()
+          }}
+        />
         <div className="msg-box-body">
           <span></span>
           <span className="msg-box-body-nickname gray">{nickName}</span>
