@@ -8,6 +8,7 @@ export interface UserInfoProps {
     sex?: 0 | 1
     email?: string
     address?: string
+    remark?: string
   }
 }
 
@@ -18,6 +19,7 @@ export default function UserInfo(props: UserInfoProps) {
     sex = 1,
     email = '秘密',
     address = '秘密',
+    remark,
   } = props.info
 
   return (
@@ -26,7 +28,8 @@ export default function UserInfo(props: UserInfoProps) {
       <div className="user-profile-info-desp">
         <div>
           <span className="user-profile-info-desp-nickname">
-            {nickName}&nbsp;
+            {remark || nickName}
+            &nbsp;
           </span>
           <span
             className="user-profile-info-desp-sex"
@@ -35,11 +38,11 @@ export default function UserInfo(props: UserInfoProps) {
             {sex === 1 ? <ManOutlined /> : <WomanOutlined />}
           </span>
         </div>
+        <span className="user-profile-info-desp-adress gray">
+          昵称:&nbsp;{nickName}
+        </span>
         <span className="user-profile-info-desp-email gray">
           邮箱:&nbsp;{email || '秘密'}
-        </span>
-        <span className="user-profile-info-desp-adress gray">
-          地区:&nbsp;{address || '秘密'}
         </span>
       </div>
     </div>

@@ -6,16 +6,21 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons'
 import { Item } from 'src/components'
-import { NoticeBar, WhiteSpace } from 'antd-mobile'
+import { NoticeBar, WhiteSpace, Modal } from 'antd-mobile'
 import './Profile.less'
 import { Fragment } from 'react'
 import { ConversationLocation } from '../Conversation/Conversation'
-import { getConvId } from 'src/api/cacheApi'
+import { getConvId, getFriendInfo } from 'src/api/cacheApi'
 import { UserInfo } from 'src/components'
+import { friendService } from 'src/services'
+import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
+import { validate } from 'src/utils'
+
+const prompt = Modal.prompt
 
 export default function Profile(props: RouteComponentProps) {
-  const { avatar, nickName, address, email, sex, id, sign } = props.location
-    .state as LinkmanListItem
+  const { avatar, nickName, address, email, sex, id, sign, remark } = props
+    .location.state as LinkmanListItem
   return (
     <div className="user-profile">
       <UserInfo
@@ -24,7 +29,8 @@ export default function Profile(props: RouteComponentProps) {
           avatar,
           address,
           email,
-          sex: sex ===0 ? 0 : 1,
+          sex: sex === 0 ? 0 : 1,
+          remark,
         }}
       />
       <Item
@@ -41,7 +47,52 @@ export default function Profile(props: RouteComponentProps) {
         }
       />
       <WhiteSpace size="sm"></WhiteSpace>
-      <Item content={<span>设置备注</span>} right={<RightOutlined />} />
+      <Item
+        content={<span>设置备注</span>}
+        right={<RightOutlined />}
+        onClick={() => {
+          prompt(
+            '修改备注',
+            '',
+            [
+              {
+                text: '关闭',
+              },
+              {
+                text: '修改',
+                onPress: (value: string) => {
+                  const onError = (err: any) => {
+                    handleErrorMsg(err, '备注修改失败!')
+                  }
+                  if (validate.validateLen(value, 10)) {
+                    friendService
+                      .updateFriend({
+                        id,
+                        remark: value,
+                      })
+                      .then((res) => {
+                        if (res.statusCode === 200) {
+                          getFriendInfo(id, false)
+                            .then(() => {
+                              handleSuccessMsg('备注修改成功')
+                              props.history.push('/home/linkman')
+                            })
+                            .catch(onError)
+                        } else {
+                          onError(res.message)
+                        }
+                      })
+                      .catch(onError)
+                  }
+                },
+              },
+            ],
+            'default',
+            '',
+            ['请输入备注'],
+          )
+        }}
+      />
       <Item content={<span>朋友权限</span>} right={<RightOutlined />} />
       <WhiteSpace size="sm"></WhiteSpace>
       <Item content={<span>朋友圈</span>} right={<RightOutlined />} />

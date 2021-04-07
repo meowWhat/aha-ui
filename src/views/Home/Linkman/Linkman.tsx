@@ -9,6 +9,7 @@ export interface LinkmanListItem {
   avatar: string
   id: string
   nickName: string
+  remark?: string
   address?: string
   email?: string
   sex?: 0 | 1
@@ -37,30 +38,35 @@ const Linkman = (props: RouteComponentProps) => {
       return (
         <div key={key}>
           <h2 className="linkman-title">{key.toLocaleUpperCase()}</h2>
-          {list.map(({ id, avatar, nickName, address, email, sex }, idx) => {
-            const className = `linkman-item ${
-              idx === list.length - 1 ? 'linkman-item-last' : ''
-            }`
-            return (
-              <div
-                key={id}
-                className={className}
-                onClick={() => {
-                  props.history.push('/user/profile', {
-                    nickName,
-                    id,
-                    avatar,
-                    address,
-                    email,
-                    sex,
-                  })
-                }}
-              >
-                <img src={avatar} alt="xx" className="linkman-item-avatar" />
-                <span className="linkman-item-nickname">{nickName}</span>
-              </div>
-            )
-          })}
+          {list.map(
+            ({ id, avatar, nickName, address, email, sex, remark }, idx) => {
+              const className = `linkman-item ${
+                idx === list.length - 1 ? 'linkman-item-last' : ''
+              }`
+              return (
+                <div
+                  key={id}
+                  className={className}
+                  onClick={() => {
+                    props.history.push('/user/profile', {
+                      nickName,
+                      id,
+                      avatar,
+                      address,
+                      email,
+                      sex,
+                      remark,
+                    })
+                  }}
+                >
+                  <img src={avatar} alt="xx" className="linkman-item-avatar" />
+                  <span className="linkman-item-nickname">
+                    {remark || nickName}
+                  </span>
+                </div>
+              )
+            },
+          )}
         </div>
       )
     })

@@ -62,9 +62,9 @@ export const getUserInfo: (id: string) => Promise<ApiUserInfo> = async (id: stri
     }
   }
 }
-export const getFriendInfo: (id: string) => Promise<ApiFriendInfo> = async (id: string) => {
+export const getFriendInfo: (id: string, cache?: boolean) => Promise<ApiFriendInfo> = async (id: string, cache = true) => {
   const data = window.localStorage.getItem(id)
-  if (data) {
+  if (data && cache) {
     service
       .post<any, Res>(`/friend/info`, { id })
       .then((data) => {

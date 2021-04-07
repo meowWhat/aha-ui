@@ -37,7 +37,8 @@ class FriendService {
       const value = {
         avatar: res.avatar,
         id: friend_id + '',
-        nickName: res.remark || res.nickname,
+        nickName: res.nickname,
+        remark: res.remark || '',
         address: res.address,
         email: res.email,
         sex: res.sex,
@@ -52,6 +53,20 @@ class FriendService {
     return result
   }
 
+  /**
+   * 更新好友备注,权限
+   */
+  public updateFriend(payload: {
+    id: string
+    role?: number
+    remark?: string
+  }) {
+    return service.put<any, Res>('/friend', {
+      "friend_id": payload.id,
+      remark: payload.remark,
+      role: payload.role
+    })
+  }
 }
 
 
