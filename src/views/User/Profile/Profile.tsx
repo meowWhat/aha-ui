@@ -15,8 +15,11 @@ import { UserInfo } from 'src/components'
 import { friendService } from 'src/services'
 import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 import { validate } from 'src/utils'
+import { db } from 'src/api/indexDB'
 
 const prompt = Modal.prompt
+const operation = Modal.operation
+const alert = Modal.alert
 
 export default function Profile(props: RouteComponentProps) {
   const { avatar, nickName, address, email, sex, id, sign, remark } = props
@@ -93,7 +96,43 @@ export default function Profile(props: RouteComponentProps) {
           )
         }}
       />
-      <Item content={<span>朋友权限</span>} right={<RightOutlined />} />
+      <Item
+        content={<span>朋友权限</span>}
+        right={<RightOutlined />}
+        onClick={() => {
+          operation([
+            {
+              text: '删除好友',
+              onPress: () => {
+                alert('删除好友', `是否删除好友 ${remark || nickName} ? `, [
+                  { text: '取消' },
+                  {
+                    text: '继续',
+                    onPress: async () => {
+                      const onError = (err: any) => {
+                        handleErrorMsg(err, '好友删除失败!')
+                      }
+                      try {
+                        const res = await friendService.deletFriend(id)
+                        if (res.statusCode === 200) {
+                          await db.deletConvItem(getConvId(id))
+                          await db.deleteInviteItem(id)
+                          handleSuccessMsg('好友删除成功')
+                          props.history.push('/home/linkman')
+                        } else {
+                          onError(res.message)
+                        }
+                      } catch (error) {
+                        onError(error)
+                      }
+                    },
+                  },
+                ])
+              },
+            },
+          ])
+        }}
+      />
       <WhiteSpace size="sm"></WhiteSpace>
       <Item content={<span>朋友圈</span>} right={<RightOutlined />} />
       <WhiteSpace size="sm"></WhiteSpace>

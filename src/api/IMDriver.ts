@@ -98,9 +98,9 @@ class IM {
   /**
    * 添加好友
    */
-  public inviteFriend(friendId: string, key: string) {
+  public inviteFriend(friendId: string, userId: string, key: string) {
     return this.sendMessage(
-      this.encodeMsg(IM['KEY']['INVITE'], friendId + '@' + key), friendId
+      this.encodeMsg(IM['KEY']['INVITE'], userId + '@' + key), friendId
     )
   }
 

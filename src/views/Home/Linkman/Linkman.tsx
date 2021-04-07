@@ -1,10 +1,10 @@
 import './Linkman.less'
 import { generateBig_1 } from 'src/utils/word'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, Fragment } from 'react'
 import { Dict } from 'src/type'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { friendService } from 'src/services'
-
+import { Result } from 'antd-mobile'
 export interface LinkmanListItem {
   avatar: string
   id: string
@@ -15,8 +15,10 @@ export interface LinkmanListItem {
   sex?: 0 | 1
   sign?: string
 }
+
 const wordList = generateBig_1()
 let dataSourceKeys: string[]
+
 const Linkman = (props: RouteComponentProps) => {
   const [active, setActive] = useState(1)
   const [dataSource, setDataSource] = useState<Dict<LinkmanListItem[]>>({})
@@ -33,75 +35,97 @@ const Linkman = (props: RouteComponentProps) => {
   }, [])
   const getList = useCallback(() => {
     dataSourceKeys = Object.keys(dataSource)
-    return dataSourceKeys.map((key) => {
-      const list = dataSource[key]
+    if (dataSourceKeys.length === 0) {
       return (
-        <div key={key}>
-          <h2 className="linkman-title">{key.toLocaleUpperCase()}</h2>
-          {list.map(
-            ({ id, avatar, nickName, address, email, sex, remark }, idx) => {
-              const className = `linkman-item ${
-                idx === list.length - 1 ? 'linkman-item-last' : ''
-              }`
-              return (
-                <div
-                  key={id}
-                  className={className}
-                  onClick={() => {
-                    props.history.push('/user/profile', {
-                      nickName,
-                      id,
-                      avatar,
-                      address,
-                      email,
-                      sex,
-                      remark,
-                    })
-                  }}
-                >
-                  <img src={avatar} alt="xx" className="linkman-item-avatar" />
-                  <span className="linkman-item-nickname">
-                    {remark || nickName}
-                  </span>
-                </div>
-              )
-            },
-          )}
-        </div>
+        <Result
+          img={
+            <img
+              src="https://gw.alipayobjects.com/zos/rmsportal/HWuSTipkjJRfTWekgTUG.svg"
+              alt=""
+              className="spe am-icon am-icon-md"
+            />
+          }
+          message="暂无好友"
+        />
       )
-    })
-  }, [dataSource, props.history])
-  return (
-    <div className="linkman">
-      {getList()}
-      <div className="linkman-nav">
-        {wordList.map((word, index) => (
-          <span
-            key={index}
-            onClick={() => {
-              setActive(index)
-              const _index = dataSourceKeys.indexOf(word.toLocaleLowerCase())
-              const targetDom = document.getElementsByClassName(
-                'linkman-title',
-              )[_index] as any
-              // 页面滚动
-              let start: number = 0
-              if (targetDom) {
-                start = targetDom.offsetTop - targetDom.clientHeight * 2
-              }
-              window.scrollTo({
-                top: start,
-                behavior: 'smooth',
-              })
-            }}
-            className={active === index ? 'green' : ''}
-          >
-            {word}
-          </span>
-        ))}
-      </div>
-    </div>
-  )
+    }
+    return (
+      <Fragment>
+        <div className="linkman-nav">
+          {wordList.map((word, index) => (
+            <span
+              key={index}
+              onClick={() => {
+                setActive(index)
+                const _index = dataSourceKeys.indexOf(word.toLocaleLowerCase())
+                const targetDom = document.getElementsByClassName(
+                  'linkman-title',
+                )[_index] as any
+                // 页面滚动
+                let start: number = 0
+                if (targetDom) {
+                  start = targetDom.offsetTop - targetDom.clientHeight * 2
+                }
+                window.scrollTo({
+                  top: start,
+                  behavior: 'smooth',
+                })
+              }}
+              className={active === index ? 'green' : ''}
+            >
+              {word}
+            </span>
+          ))}
+        </div>
+        {dataSourceKeys.map((key) => {
+          const list = dataSource[key]
+          return (
+            <div key={key}>
+              <h2 className="linkman-title">{key.toLocaleUpperCase()}</h2>
+              {list.map(
+                (
+                  { id, avatar, nickName, address, email, sex, remark },
+                  idx,
+                ) => {
+                  const className = `linkman-item ${
+                    idx === list.length - 1 ? 'linkman-item-last' : ''
+                  }`
+                  return (
+                    <div
+                      key={id}
+                      className={className}
+                      onClick={() => {
+                        props.history.push('/user/profile', {
+                          nickName,
+                          id,
+                          avatar,
+                          address,
+                          email,
+                          sex,
+                          remark,
+                        })
+                      }}
+                    >
+                      <img
+                        src={avatar}
+                        alt="xx"
+                        className="linkman-item-avatar"
+                      />
+                      <span className="linkman-item-nickname">
+                        {remark || nickName}
+                      </span>
+                    </div>
+                  )
+                },
+              )}
+            </div>
+          )
+        })}
+      </Fragment>
+    )
+  }, [dataSource, props.history, active])
+
+  return <div className="linkman">{getList()}</div>
 }
 
 export default withRouter(Linkman)

@@ -47,8 +47,9 @@ const FriendAdder = observer((props: FriendAdderProps) => {
       const res = await friendService.addFriend(friendEmail)
       if (res.statusCode === 200) {
         const friendId: string = res.message.friendId + ''
+        const userId: string = res.message.userId + ''
         const key: string = res.message.key
-        await im.inviteFriend(friendId, key)
+        await im.inviteFriend(friendId, userId, key)
         handleSuccessMsg('消息已发送!')
       } else {
         handleErrorMsg(res.message, '消息发送失败')
@@ -77,9 +78,11 @@ const FriendAdder = observer((props: FriendAdderProps) => {
     const doService = async () => {
       try {
         const res = await db.getInviteList()
+
         const list = await Promise.all(
           res.map(async ({ isAccept, userId, key }) => {
             const { nickname, avatar } = await getUserInfo(userId)
+
             return {
               avatar,
               nickName: nickname,
@@ -89,6 +92,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
             }
           }),
         )
+
         setInviteList(list)
       } catch (error) {
         console.log(error)

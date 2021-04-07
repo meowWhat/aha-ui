@@ -164,6 +164,47 @@ export class DataBase {
     })
   }
 
+  public deleteMsgByConvId(convId: string) {
+    return new Promise((reslove, reject) => {
+      this.checkDb().then(() => {
+        const request = this.db
+          .transaction(TB_MESSAGE, 'readwrite')
+          .objectStore(TB_MESSAGE)
+          .index('conversationId')
+          .openCursor(convId, 'next')
+
+        request.onsuccess = function () {
+          const cursor = this.result
+          if (cursor) {
+            cursor.delete()
+          } else {
+            reslove(true)
+          }
+        }
+
+        request.onerror = (err) => reject(err)
+      })
+    })
+  }
+
+  public deletConvItem(convId: string) {
+    return new Promise((reslove, reject) => {
+
+      this.checkDb().then(() => {
+
+        const request = this.db
+          .transaction(TB_CONVERSATION, 'readwrite')
+          .objectStore(TB_CONVERSATION)
+          .delete(convId)
+
+        request.onsuccess = () => {
+          this.deleteMsgByConvId(convId).then(() => reslove(true)).catch((err) => reject(err))
+        }
+
+        request.onerror = (err) => reject(err)
+      })
+    })
+  }
 
   public addInviteItem(userId: string, key: string) {
     return new Promise((reslove) => {
@@ -172,7 +213,7 @@ export class DataBase {
         const msgRequest = this.db
           .transaction(TB_INVITE, 'readwrite')
           .objectStore(TB_INVITE)
-          .add({
+          .put({
             userId,
             isAccept: false,
             key

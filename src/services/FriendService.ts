@@ -17,7 +17,7 @@ class FriendService {
   }
 
   public deletFriend(friend_id: string) {
-    return service.delete('/friend', {
+    return service.delete<any, Res>('/friend', {
       data: { friend_id: friend_id }
     })
   }
