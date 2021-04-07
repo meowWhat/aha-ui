@@ -174,10 +174,13 @@ export class DataBase {
           .openCursor(convId, 'next')
 
         request.onsuccess = function () {
+
           const cursor = this.result
           if (cursor) {
             cursor.delete()
+            cursor.continue()
           } else {
+
             reslove(true)
           }
         }
@@ -198,7 +201,9 @@ export class DataBase {
           .delete(convId)
 
         request.onsuccess = () => {
-          this.deleteMsgByConvId(convId).then(() => reslove(true)).catch((err) => reject(err))
+          this.deleteMsgByConvId(convId)
+            .then(() => reslove(true))
+            .catch((err) => reject(err))
         }
 
         request.onerror = (err) => reject(err)

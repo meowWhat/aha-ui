@@ -10,6 +10,7 @@ import { ConversationLocation } from 'src/views/User/Conversation/Conversation'
 import { getFriendIdByConvId, getFriendInfo } from 'src/api/cacheApi'
 import { LOADING } from 'src/api/msgConst'
 import { db } from 'src/api/indexDB'
+import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 
 const operation = Modal.operation
 
@@ -35,10 +36,14 @@ const Message = observer(({ imState, history }: MessageProps) => {
       {
         text: '删除该聊天',
         onPress: () => {
-          console.log('delete conversation', convId)
+          db.deletConvItem(convId)
+            .then(() => {
+              handleSuccessMsg('删除成功')
+              imState.updateConv()
+            })
+            .catch((err) => handleErrorMsg(err, '删除失败'))
         },
       },
-      // { text: '置顶聊天', onPress: () => console.log('置顶聊天被点击了') },
     ])
   }
   const click = (convId: string, nickName: string, avatar: string) => {
@@ -98,7 +103,7 @@ const Message = observer(({ imState, history }: MessageProps) => {
               onTouchStart={(e) => {
                 ref.current.startTime = Date.now()
                 ref.current.timer = setTimeout(
-                  longPress.bind(conversationId) as any,
+                  longPress.bind(undefined, conversationId) as any,
                   700,
                 )
                 e.preventDefault()
