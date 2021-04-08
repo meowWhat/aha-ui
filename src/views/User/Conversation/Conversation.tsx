@@ -6,11 +6,11 @@ import {
   PictureOutlined,
   PhoneOutlined,
   HistoryOutlined,
-  EditOutlined,
+  EditOutlined
 } from '@ant-design/icons'
 import { useEffect, useState, useRef } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { MsgBox, Emoji, ring } from 'src/components'
+import { MsgBox, Emoji, ring, RenderVoip } from 'src/components'
 import './Conversation.less'
 import { Popover } from 'antd-mobile'
 import classNames from 'classnames'
@@ -27,6 +27,7 @@ import {
 } from 'src/api/cacheApi'
 import { handleErrorMsg } from 'src/api/resHandle'
 import { friendService } from 'src/services'
+
 const Item = Popover.Item
 
 interface ConversationProps extends RouteComponentProps {
@@ -56,6 +57,8 @@ const Conversation = observer((props: ConversationProps) => {
   const [value, setValue] = useState('')
   // 控制表情包扩展
   const [isEmoji, setIsEmoji] = useState(true)
+  const [popoverVisible, setPopoverVisible] = useState(false)
+
   const textArea = useRef<HTMLTextAreaElement>(null)
   const scroll = (isAuto: boolean) => {
     setIsEmoji(true)
@@ -223,6 +226,7 @@ const Conversation = observer((props: ConversationProps) => {
           // 更多
           <Popover
             placement="topRight"
+            visible={popoverVisible}
             overlay={[
               <Item key="1" icon={<PictureOutlined />}>
                 发送图片
@@ -235,12 +239,18 @@ const Conversation = observer((props: ConversationProps) => {
               </Item>,
             ]}
             onSelect={(_, index) => {
+              setPopoverVisible(false)
               switch (index) {
                 case 0:
                   console.log('发送图片')
                   break
                 case 1:
-                  console.log('语音通话')
+                  ring('call')
+                  RenderVoip('call', {
+                    remark: '惹不起',
+                    avatar: friendAvatar,
+                    nickname: friendName
+                  })
                   break
                 case 2:
                   console.log('聊天记录')
@@ -249,6 +259,10 @@ const Conversation = observer((props: ConversationProps) => {
                   break
               }
             }}
+            onVisibleChange={(flag) => {
+              setPopoverVisible(flag)
+            }}
+
           >
             <PlusCircleOutlined />
           </Popover>
@@ -262,8 +276,10 @@ const Conversation = observer((props: ConversationProps) => {
           <Emoji></Emoji>
         </div>
       </div>
+
     </div>
   )
 })
 
 export default withRouter(Conversation)
+
