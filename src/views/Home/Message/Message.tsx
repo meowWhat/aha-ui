@@ -23,6 +23,7 @@ interface ListItem {
   avatar: string
   nickName: string
   date: string
+  remark?: string
 }
 
 const Message = observer(({ imState, history }: MessageProps) => {
@@ -46,9 +47,9 @@ const Message = observer(({ imState, history }: MessageProps) => {
       },
     ])
   }
-  const click = (convId: string, nickName: string, avatar: string) => {
+  const click = (convId: string, nickName: string, avatar: string, remark = '') => {
     const state: ConversationLocation = {
-      nickName,
+      nickName: remark || nickName,
       convId,
       avatar,
     }
@@ -72,12 +73,14 @@ const Message = observer(({ imState, history }: MessageProps) => {
                 avatar: 'error',
                 nickName: friendId,
                 date,
+                remark: ''
               }
               getFriendInfo(friendId)
                 .then((data) => {
                   if (data) {
                     res.avatar = data.avatar
                     res.nickName = data.nickname
+                    res.remark = data.remark || ''
                   }
                   reslove(res)
                 })
@@ -96,7 +99,7 @@ const Message = observer(({ imState, history }: MessageProps) => {
   return (
     <div className="msg">
       {!loading ? (
-        list.map(({ text, nickName, avatar, conversationId, date }) => {
+        list.map(({ text, nickName, avatar, conversationId, date, remark }) => {
           return (
             <div
               key={conversationId}
@@ -117,7 +120,7 @@ const Message = observer(({ imState, history }: MessageProps) => {
               }}
               onTouchEnd={() => {
                 if (Date.now() - ref.current.startTime < 700) {
-                  click(conversationId, nickName, avatar)
+                  click(conversationId, nickName, avatar, remark)
                   if (ref.current.timer) {
                     clearTimeout(ref.current.timer)
                   }
@@ -128,7 +131,7 @@ const Message = observer(({ imState, history }: MessageProps) => {
                 left={<img src={avatar} alt="头像"></img>}
                 content={
                   <Fragment>
-                    <div className="msg-nickName">{nickName}</div>
+                    <div className="msg-nickName">{remark || nickName}</div>
                     <p className="msg-text">{text}</p>
                   </Fragment>
                 }
