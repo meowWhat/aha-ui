@@ -81,7 +81,6 @@ const Home = observer(({ imState, history }: HomeProps) => {
           <ActivityIndicator text="loading...." />
         )}
       </section>
-
       <div className="home-tabbar bgc-gray">
         <NavLink
           activeClassName="green"

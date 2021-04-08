@@ -12,6 +12,7 @@ import { getUserInfo } from 'src/api/cacheApi'
 import { friendService } from 'src/services'
 import { im } from 'src/api/IMDriver'
 import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
+import { ring } from 'src/components'
 
 interface FriendAdderProps {
   onLoad: (title: string) => void
@@ -114,6 +115,7 @@ const FriendAdder = observer((props: FriendAdderProps) => {
             }}
             onScan={(data) => {
               if (data !== null) {
+                ring('scanOver')
                 handleFriendAdd(data)
                 setIsShowQrScan(false)
               }

@@ -147,7 +147,7 @@ const Message = observer(({ imState, history }: MessageProps) => {
       ) : (
         <ActivityIndicator text={LOADING} />
       )}
-    </div>
+    </div >
   )
 })
 

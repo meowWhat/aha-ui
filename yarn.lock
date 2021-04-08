@@ -1673,8 +1673,6 @@
   version "7.6.2"
   resolved "https://registry.npm.taobao.org/@types/babel__generator/download/@types/babel__generator-7.6.2.tgz#f3d71178e187858f7c45e30380f8f1b7415a12d8"
   integrity sha1-89cReOGHhY98ReMDgPjxt0FaEtg=
-  dependencies:
-    "@babel/types" "^7.0.0"
 
 "@types/babel__template@*":
   version "7.4.0"
@@ -1859,6 +1857,13 @@
   integrity sha1-RhTlunVZZXQ44Xdmu5Xvbtasw/o=
   dependencies:
     "@types/history" "*"
+    "@types/react" "*"
+
+"@types/react-sound@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@types/react-sound/-/react-sound-1.2.2.tgz#07677469bfcfedeb32fe4c770b44cc4c4d5a8a30"
+  integrity sha512-Me8hKcx3bgpLNZCuyO40D3+a/1I9xlnx0ZteZRlNWcpQ7zpT+xBAXDlSy8RlTdIigTq7O3OiyV0FZcDjZhGT5g==
+  dependencies:
     "@types/react" "*"
 
 "@types/react-virtualized@^9.21.10":
@@ -2284,6 +2289,11 @@ aggregate-error@^3.0.0:
   dependencies:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
+
+agora-rtc-sdk-ng@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.4.0.tgz#ea036cab115f8f206e654e258ffce175548048ad"
+  integrity sha512-wcXLPL9+5BwRXlALm2LYADMRALC2Q76On/BGgJgEmURnnIdJkiWito6YKrXsumkxvnzCGlkPgIt6QoLVqnAYug==
 
 agora-rtm-sdk@^1.4.1-201:
   version "1.4.1-201"
@@ -9189,7 +9199,7 @@ prompts@2.4.0, prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npm.taobao.org/prop-types/download/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -9671,6 +9681,14 @@ react-scripts@4.0.1:
     workbox-webpack-plugin "5.1.4"
   optionalDependencies:
     fsevents "^2.1.3"
+
+react-sound@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-sound/-/react-sound-1.2.0.tgz#1bb7e1ec8494ecc57b03dbdecd1496b10f6541f2"
+  integrity sha512-pc2l8f7Oy3VePRRVesBwSSJ0mrCeD/lE5GVCT1RPdEQ7lgbZTDyWI8HokXHmS1v79aiLnd3WTRhfsBAY0NTb8g==
+  dependencies:
+    prop-types "^15.5.7"
+    soundmanager2 "^2.97.20170602"
 
 react-tween-state@^0.1.5:
   version "0.1.5"
@@ -10686,6 +10704,11 @@ sort-keys@^1.0.0:
   integrity sha1-RBttTTRnmPG05J6JIK37oOVD+a0=
   dependencies:
     is-plain-obj "^1.0.0"
+
+soundmanager2@^2.97.20170602:
+  version "2.97.20170602"
+  resolved "https://registry.yarnpkg.com/soundmanager2/-/soundmanager2-2.97.20170602.tgz#fe3bc731bfc4d54c1364e71980263e6816981879"
+  integrity sha512-2ee7ES9SJ++WkD7PGHMeT4QUuJr7uC3wacD6RoCDlKjdSp9lpEOaKm3lKWKld119DLILjS2l9U6xpXJN6U0KPQ==
 
 source-list-map@^2.0.0:
   version "2.0.1"

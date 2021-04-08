@@ -1,18 +1,32 @@
-import AgoraRTM, { RtmClient, RtmMessage } from 'agora-rtm-sdk'
+import AgoraRTM, { RtmClient, RtmMessage, RtmEvents } from 'agora-rtm-sdk'
+import { appId } from 'src/config'
 import { imState } from 'src/states/IMState'
 import { handleErrorMsg } from './resHandle'
-
 
 class IM {
   static KEY = {
     // 添加好友
-    INVITE: '@dzxc'
+    INVITE: '@dzxc',
   }
   private client: RtmClient
   private uid?: string
   private isOnline: boolean = false
+  private localInvitation?: ReturnType<RtmClient['createLocalInvitation']>
+  private remoteInvitation?: Parameters<
+    RtmEvents.RtmClientEvents['RemoteInvitationReceived']
+  >[number]
+
   constructor() {
-    this.client = AgoraRTM.createInstance('27dec015472841e19b0a1313404f87b6')
+    this.client = AgoraRTM.createInstance(appId!, {
+      logFilter: {
+        error: true,
+        debug: false,
+        info: false,
+        track: false,
+        warn: true,
+      },
+    })
+    // 链接状态管理
     this.client.on('ConnectionStateChanged', (newState) => {
       if (newState === 'CONNECTED') {
         this.isOnline = true
@@ -23,12 +37,15 @@ class IM {
       }
     })
   }
+
   public getClient() {
     return this.client
   }
+
   public onMessage(listener: (message: RtmMessage, perrId: string) => void) {
     this.client.on('MessageFromPeer', listener)
   }
+
   public login(uid: string) {
     this.uid = uid
     return new Promise((reslove, reject) => {
@@ -47,6 +64,7 @@ class IM {
   public logout() {
     return this.client.logout()
   }
+
   public sendMessage(text: string, targetId: string) {
     return new Promise((reslove, reject) => {
       if (this.isOnline === false) {
@@ -73,6 +91,7 @@ class IM {
         })
     })
   }
+
   /**
    * 检查 clinet 连接状态
    */
@@ -100,7 +119,8 @@ class IM {
    */
   public inviteFriend(friendId: string, userId: string, key: string) {
     return this.sendMessage(
-      this.encodeMsg(IM['KEY']['INVITE'], userId + '@' + key), friendId
+      this.encodeMsg(IM['KEY']['INVITE'], userId + '@' + key),
+      friendId,
     )
   }
 
@@ -115,11 +135,91 @@ class IM {
         const split = decodeMsg.split('@')
         return {
           id: split[0],
-          key: split[1]
+          key: split[1],
         }
       }
     }
     return null
+  }
+
+  /**
+   * 呼叫邀请
+   */
+  public call(
+    calleeId: string,
+    handle: {
+      // 呼叫邀请被接受
+      onAccept: () => void
+      // 呼叫邀请被拒绝
+      onRefused: () => void
+      // 呼叫邀请被关闭
+      onClose: () => void
+    },
+  ) {
+    // 初始化呼叫邀请对象
+    this.localInvitation = this.client.createLocalInvitation(calleeId)
+
+    this.localInvitation.on('LocalInvitationReceivedByPeer', () => {
+      console.log('被叫收到呼叫邀请')
+    })
+
+    this.localInvitation.on('LocalInvitationCanceled', () => {
+      console.log('呼叫邀请被取消')
+    })
+
+    this.localInvitation.on('LocalInvitationAccepted', () => {
+      console.log('被叫已接受呼叫要求')
+    })
+
+    this.localInvitation.on('LocalInvitationRefused', () => {
+      console.log('被叫已拒绝呼叫邀请')
+    })
+
+    this.localInvitation.on('LocalInvitationFailure', () => {
+      console.log('呼叫邀请过程失败')
+    })
+
+    // 发送呼叫邀请
+    this.localInvitation.send()
+  }
+
+  /**
+   * 取消呼叫邀请
+   */
+  public cancelCall() {
+    this.localInvitation && this.localInvitation.cancel()
+  }
+
+  public onCallee() {
+    this.client.on('RemoteInvitationReceived', (remoteInvitation) => {
+      this.remoteInvitation = remoteInvitation
+      remoteInvitation.on('RemoteInvitationCanceled', () => {
+        console.log('主叫取消呼叫邀请')
+      })
+      remoteInvitation.on('RemoteInvitationAccepted', () => {
+        console.log('接受呼叫邀请成功')
+      })
+      remoteInvitation.on('RemoteInvitationRefused', () => {
+        console.log('拒绝呼叫邀请成功')
+      })
+      remoteInvitation.on('RemoteInvitationFailure', () => {
+        console.log('呼叫邀请过程失败')
+      })
+    })
+  }
+
+  /**
+   * 接受呼叫邀请
+   */
+  public acceptCall() {
+    this.remoteInvitation && this.remoteInvitation.accept()
+  }
+
+  /**
+   * 拒绝呼叫邀请
+   */
+  public refuseCall() {
+    this.remoteInvitation && this.remoteInvitation.refuse()
   }
 
   private encodeMsg(key: string, msg: string) {

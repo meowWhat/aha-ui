@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons'
 import { useEffect, useState, useRef } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { MsgBox, Emoji } from 'src/components'
+import { MsgBox, Emoji, ring } from 'src/components'
 import './Conversation.less'
 import { Popover } from 'antd-mobile'
 import classNames from 'classnames'
@@ -202,6 +202,7 @@ const Conversation = observer((props: ConversationProps) => {
                 if (isFriend) {
                   await im.sendMessage(value, peerId)
                   const convId = getConvId(peerId)
+                  ring('sendMsg')
                   addMsg(
                     { messageType: 'TEXT', text: value },
                     staticData.userId,
