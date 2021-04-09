@@ -43,6 +43,7 @@ export const useValidate = (imState: IMState) => {
                 addMsg(msg, peerId, convId, imState)
               }
             })
+            im.onCallee()
           })
         }
       })

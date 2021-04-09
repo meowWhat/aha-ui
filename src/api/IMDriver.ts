@@ -1,7 +1,13 @@
 import AgoraRTM, { RtmClient, RtmMessage, RtmEvents } from 'agora-rtm-sdk'
+import { RenderVoip } from 'src/components'
 import { appId } from 'src/config'
 import { imState } from 'src/states/IMState'
+import { getFriendInfo } from './cacheApi'
 import { handleErrorMsg } from './resHandle'
+
+export type RemoteInvitation = Parameters<
+  RtmEvents.RtmClientEvents['RemoteInvitationReceived']
+>[number]
 
 class IM {
   static KEY = {
@@ -12,20 +18,10 @@ class IM {
   private uid?: string
   private isOnline: boolean = false
   private localInvitation?: ReturnType<RtmClient['createLocalInvitation']>
-  private remoteInvitation?: Parameters<
-    RtmEvents.RtmClientEvents['RemoteInvitationReceived']
-  >[number]
+  private remoteInvitation?: RemoteInvitation
 
   constructor() {
-    this.client = AgoraRTM.createInstance(appId!, {
-      logFilter: {
-        error: true,
-        debug: false,
-        info: false,
-        track: false,
-        warn: true,
-      },
-    })
+    this.client = AgoraRTM.createInstance(appId!)
     // 链接状态管理
     this.client.on('ConnectionStateChanged', (newState) => {
       if (newState === 'CONNECTED') {
@@ -156,6 +152,7 @@ class IM {
       onClose: () => void
     },
   ) {
+    const { onAccept, onRefused, onClose } = handle
     // 初始化呼叫邀请对象
     this.localInvitation = this.client.createLocalInvitation(calleeId)
 
@@ -164,18 +161,22 @@ class IM {
     })
 
     this.localInvitation.on('LocalInvitationCanceled', () => {
+      onClose()
       console.log('呼叫邀请被取消')
     })
 
     this.localInvitation.on('LocalInvitationAccepted', () => {
+      onAccept()
       console.log('被叫已接受呼叫要求')
     })
 
     this.localInvitation.on('LocalInvitationRefused', () => {
+      onRefused()
       console.log('被叫已拒绝呼叫邀请')
     })
 
     this.localInvitation.on('LocalInvitationFailure', () => {
+      onClose()
       console.log('呼叫邀请过程失败')
     })
 
@@ -191,20 +192,23 @@ class IM {
   }
 
   public onCallee() {
-    this.client.on('RemoteInvitationReceived', (remoteInvitation) => {
+    this.client.on('RemoteInvitationReceived', async (remoteInvitation) => {
       this.remoteInvitation = remoteInvitation
-      remoteInvitation.on('RemoteInvitationCanceled', () => {
-        console.log('主叫取消呼叫邀请')
-      })
-      remoteInvitation.on('RemoteInvitationAccepted', () => {
-        console.log('接受呼叫邀请成功')
-      })
-      remoteInvitation.on('RemoteInvitationRefused', () => {
-        console.log('拒绝呼叫邀请成功')
-      })
-      remoteInvitation.on('RemoteInvitationFailure', () => {
-        console.log('呼叫邀请过程失败')
-      })
+
+      const firendId = remoteInvitation.callerId
+      const friendInfo = await getFriendInfo(firendId)
+
+      RenderVoip(
+        'callee',
+        {
+          remark: friendInfo.remark,
+          avatar: friendInfo.avatar,
+          friendId: friendInfo.id,
+          nickname: friendInfo.nickname,
+        },
+        {},
+        this.remoteInvitation,
+      )
     })
   }
 

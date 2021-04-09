@@ -245,11 +245,20 @@ const Conversation = observer((props: ConversationProps) => {
                   console.log('发送图片')
                   break
                 case 1:
-                  RenderVoip('callee', {
-                    remark: '惹不起',
-                    avatar: friendAvatar,
-                    nickname: friendName
+                  const friendId = getFriendIdByConvId(convId)
+                  getFriendInfo(friendId).then(({
+                    nickname,
+                    remark,
+                    avatar
+                  }) => {
+                    RenderVoip('call', {
+                      remark,
+                      avatar,
+                      nickname,
+                      friendId
+                    })
                   })
+
                   break
                 case 2:
                   console.log('聊天记录')

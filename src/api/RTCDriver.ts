@@ -7,6 +7,7 @@ import { appId } from 'src/config'
 class RTC {
   private client: IAgoraRTCClient
   private localAudioTrack!: IMicrophoneAudioTrack
+
   constructor() {
     this.client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })
     AgoraRTC.setLogLevel(3)
@@ -24,20 +25,27 @@ class RTC {
       }
     })
   }
-  public async test(userId: string) {
+
+  public async createCall(userId: string) {
     try {
       await this.client.join(appId!, 'demo', null, userId)
       this.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
       await this.client.publish([this.localAudioTrack])
-
-      console.log('publish success')
     } catch (error) {
       console.log('publish error', error)
     }
   }
+
   public async leaveCall() {
     this.localAudioTrack.close()
     await this.client.leave()
+  }
+
+  public onLeave(cb: () => void) {
+    this.client.on('user-unpublished', () => {
+      this.leaveCall()
+      cb()
+    })
   }
 }
 
