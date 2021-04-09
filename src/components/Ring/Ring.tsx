@@ -1,6 +1,8 @@
 import Sound from 'react-sound'
 import ReactDOM from 'react-dom'
 
+(window as any).soundManager.setup({ debugMode: false })
+
 const RING_TYPE = {
   getMsg: "http://img.tukuppt.com/newpreview_music/09/00/76/5c894b095237f81946.mp3",
   call: "http://img.tukuppt.com/newpreview_music/08/98/71/5c88b2aa99cb94486.mp3",

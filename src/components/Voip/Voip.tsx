@@ -1,21 +1,35 @@
+import { useState } from 'react'
 import ReactDOM from 'react-dom'
 import { VoipToolItem } from 'src/components'
 import { PoweroffOutlined, PhoneOutlined } from '@ant-design/icons'
 import './Voip.less'
+import { ring } from '../Ring/Ring'
 
+type VoipMode = 'call' | 'callee' | 'calling'
 export const RenderVoip = (
-  mode: 'call' | 'callee' | 'calling',
+  mode: VoipMode,
   info: {
     remark: string | undefined
     nickname: string
     avatar: string
+  },
+  handler?: {
+    onHangUp?: () => void,
+    onAccept?: () => void
   }
 ) => {
+
+  let destoryRing: () => void | undefined
   const div = document.createElement('div')
 
   document.body.appendChild(div)
 
-  const destory = () => {
+  if (mode !== 'calling') {
+    const { destory } = ring('call')
+    destoryRing = destory
+  }
+
+  const destoryVoip = () => {
 
     const unmountResult = ReactDOM.unmountComponentAtNode(div)
 
@@ -25,9 +39,10 @@ export const RenderVoip = (
 
   }
 
+  const Voip = () => {
+    const [_mode, setMode] = useState<VoipMode>(mode)
 
-  ReactDOM.render(
-    <div className="conversation-voip" >
+    return <div className="conversation-voip" >
       <div className="conversation-voip-user">
         <div className="conversation-voip-user-avatar">
           <img src={info.avatar} alt="" />
@@ -38,9 +53,9 @@ export const RenderVoip = (
         <div
           className="conversation-voip-user-tools"
           style={{
-            gridTemplateColumns: mode === 'call'
-              ? 'repeat(1, 1fr)'
-              : 'repeat(2, 1fr)'
+            gridTemplateColumns: _mode === 'callee'
+              ? 'repeat(2, 1fr)'
+              : 'repeat(1, 1fr)'
           }}
         >
 
@@ -48,28 +63,39 @@ export const RenderVoip = (
             icon={<PoweroffOutlined color="#fff" />} bgColor="#dd4a48"
             desp="挂断"
             onClick={() => {
-              // TODO
+              const cb = handler?.onHangUp
+              cb && cb()
+              ring('hangUp')
+              destoryVoip()
             }}
           />
 
           {
-            mode === 'call' ?
-              null :
-              <VoipToolItem
+            _mode === 'callee'
+              ? <VoipToolItem
                 icon={<PhoneOutlined color="#fff" />} bgColor="green"
                 desp="接听"
                 onClick={() => {
-                  // TODO
+                  const cb = handler?.onAccept
+                  cb && cb()
+                  setMode('calling')
+                  destoryRing()
                 }}
               />
+              : null
           }
         </div>
       </div>
-    </div>,
+    </div>
+  }
+
+
+  ReactDOM.render(
+    <Voip />,
     div
   )
 
   return {
-    destory
+    destory: destoryVoip
   }
 }

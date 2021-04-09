@@ -28,7 +28,8 @@ export const useValidate = (imState: IMState) => {
         }
       })
       .then((userInfo) => {
-        staticData.userInfo = userInfo!
+        if (!userInfo) return
+        staticData.userInfo = userInfo
         setLoginFlag(true)
         if (!imState.isOnline) {
           im.login(staticData.userId).then(() => {
@@ -42,7 +43,6 @@ export const useValidate = (imState: IMState) => {
                 addMsg(msg, peerId, convId, imState)
               }
             })
-            // rtc.test(staticData.userId)
           })
         }
       })

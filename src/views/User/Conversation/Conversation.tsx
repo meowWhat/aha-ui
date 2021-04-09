@@ -245,8 +245,7 @@ const Conversation = observer((props: ConversationProps) => {
                   console.log('发送图片')
                   break
                 case 1:
-                  ring('call')
-                  RenderVoip('call', {
+                  RenderVoip('callee', {
                     remark: '惹不起',
                     avatar: friendAvatar,
                     nickname: friendName
