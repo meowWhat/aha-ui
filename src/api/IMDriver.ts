@@ -4,6 +4,7 @@ import { appId } from 'src/config'
 import { imState } from 'src/states/IMState'
 import { getFriendInfo } from './cacheApi'
 import { handleErrorMsg } from './resHandle'
+import { rtc } from './RTCDriver'
 
 export type RemoteInvitation = Parameters<
   RtmEvents.RtmClientEvents['RemoteInvitationReceived']
@@ -188,6 +189,10 @@ class IM {
 
   public onCallee() {
     this.client.on('RemoteInvitationReceived', async (remoteInvitation) => {
+      if (rtc.busy) {
+        return remoteInvitation.refuse()
+      }
+
       this.remoteInvitation = remoteInvitation
 
       const firendId = remoteInvitation.callerId

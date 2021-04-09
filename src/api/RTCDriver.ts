@@ -7,6 +7,7 @@ import { appId } from 'src/config'
 class RTC {
   private client: IAgoraRTCClient
   private localAudioTrack!: IMicrophoneAudioTrack
+  public busy = false
 
   constructor() {
     this.client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })
@@ -14,7 +15,6 @@ class RTC {
     this.client.on('user-published', async (user, mediaType) => {
       // 开始订阅远端用户。
       await this.client.subscribe(user, mediaType)
-      console.log('subscribe success')
 
       // 表示本次订阅的是音频。
       if (mediaType === 'audio') {
@@ -28,6 +28,7 @@ class RTC {
 
   public async createCall(userId: string, channel: string) {
     try {
+      this.busy = true
       await this.client.join(appId!, channel, null, userId)
       this.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
       await this.client.publish([this.localAudioTrack])
@@ -37,6 +38,7 @@ class RTC {
   }
 
   public async leaveCall() {
+    this.busy = false
     this.localAudioTrack && this.localAudioTrack.close()
     await this.client.leave()
   }
