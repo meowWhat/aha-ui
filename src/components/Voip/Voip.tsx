@@ -43,10 +43,13 @@ export const RenderVoip = (
   const Voip = () => {
     const [_mode, setMode] = useState<VoipMode>(mode)
 
-    const handleClose = () => {
+    const handleClose = (msg = '通话结束!') => {
+
       destoryRing && destoryRing()
       ring('hangUp')
       destoryVoip()
+      handleErrorMsg(msg)
+
       try {
         rtc.leaveCall()
       } catch (error) {
@@ -60,21 +63,17 @@ export const RenderVoip = (
         destoryRing = destory
         im.call(info.friendId, {
           onAccept: () => {
-            rtc.createCall(staticData.userId).then(() => {
-              destoryRing()
-              setMode('calling')
-            }).catch(() => {
+            destoryRing()
+            rtc.createCall(staticData.userId, staticData.userId + '').catch(() => {
               handleClose()
             })
-
           },
           onClose: () => {
-            handleErrorMsg('通话结束!')
+
             handleClose()
           },
           onRefused: () => {
-            handleErrorMsg('通话邀请被拒绝!')
-            handleClose()
+            handleClose('通话邀请被拒绝!')
           }
         })
       }
@@ -84,31 +83,30 @@ export const RenderVoip = (
         destoryRing = destory
 
         rtc.onLeave(() => {
-          handleErrorMsg('通话结束!')
+
           handleClose()
+
         })
+
         remoteInvitation.on('RemoteInvitationCanceled', () => {
-          handleErrorMsg('主叫已取消呼叫邀请。!')
-          handleClose()
+          handleClose('主叫已取消呼叫邀请!')
         })
 
         remoteInvitation.on('RemoteInvitationFailure', () => {
-          handleErrorMsg('通话结束!')
           handleClose()
         })
 
         remoteInvitation.on('RemoteInvitationAccepted', () => {
-          rtc.createCall(staticData.userId).then(() => {
-            destoryRing()
-            setMode('calling')
-          }).catch(() => {
+          destoryRing()
+          setMode('calling')
+          rtc.createCall(staticData.userId, remoteInvitation.callerId).catch(() => {
             handleClose()
           })
         })
 
 
       }
-    }, [_mode])
+    }, [])
 
     return <div className="conversation-voip" >
       <div className="conversation-voip-user">
@@ -133,13 +131,18 @@ export const RenderVoip = (
             onClick={() => {
               const cb = handler?.onHangUp
               cb && cb()
-              handleClose()
 
-              if (_mode === 'call') {
-                im.cancelCall()
-              } else if (_mode === 'callee') {
-                im.refuseCall()
+              try {
+                if (_mode === 'call') {
+                  im.cancelCall()
+                } else if (_mode === 'callee') {
+                  im.refuseCall()
+                }
+              } catch (error) {
+
               }
+
+              handleClose()
 
             }}
           />
@@ -152,9 +155,8 @@ export const RenderVoip = (
                 onClick={() => {
                   const cb = handler?.onAccept
                   cb && cb()
-                  setMode('calling')
-                  destoryRing && destoryRing()
                   im.acceptCall()
+                  setMode('calling')
                 }}
               />
               : null

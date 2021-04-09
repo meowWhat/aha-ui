@@ -26,9 +26,9 @@ class RTC {
     })
   }
 
-  public async createCall(userId: string) {
+  public async createCall(userId: string, channel: string) {
     try {
-      await this.client.join(appId!, 'demo', null, userId)
+      await this.client.join(appId!, channel, null, userId)
       this.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
       await this.client.publish([this.localAudioTrack])
     } catch (error) {
@@ -37,7 +37,7 @@ class RTC {
   }
 
   public async leaveCall() {
-    this.localAudioTrack.close()
+    this.localAudioTrack && this.localAudioTrack.close()
     await this.client.leave()
   }
 

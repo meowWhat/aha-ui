@@ -160,11 +160,6 @@ class IM {
       console.log('被叫收到呼叫邀请')
     })
 
-    this.localInvitation.on('LocalInvitationCanceled', () => {
-      onClose()
-      console.log('呼叫邀请被取消')
-    })
-
     this.localInvitation.on('LocalInvitationAccepted', () => {
       onAccept()
       console.log('被叫已接受呼叫要求')
