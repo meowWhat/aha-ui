@@ -31,9 +31,10 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired build && yarn run publish",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "publish": "scp -r ./build/ root@47.99.215.120:/var/www/html"
   },
   "eslintConfig": {
     "extends": [
