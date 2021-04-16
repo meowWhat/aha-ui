@@ -4501,6 +4501,11 @@ emittery@^0.7.1:
   resolved "https://registry.npm.taobao.org/emittery/download/emittery-0.7.2.tgz?cache=0&sync_timestamp=1602906286411&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Femittery%2Fdownload%2Femittery-0.7.2.tgz#25595908e13af0f5674ab419396e2fb394cdfa82"
   integrity sha1-JVlZCOE68PVnSrQZOW4vs5TN+oI=
 
+emoji-picker-react@^3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-3.4.4.tgz#027786af60d4b7ebe04338c5456ae7ae4b3d3eb6"
+  integrity sha512-j5atTz5Uawt926Bc37MG5S0MwfIa9Gh4CVDGhnMSBhKZkDmgd5Q0QtQgcv+baLGdByYBsYx1OyQHORc6o8Ce5Q==
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.npm.taobao.org/emoji-regex/download/emoji-regex-7.0.3.tgz?cache=0&sync_timestamp=1603212163056&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Femoji-regex%2Fdownload%2Femoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"

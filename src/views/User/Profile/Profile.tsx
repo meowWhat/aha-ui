@@ -5,7 +5,7 @@ import {
   MessageOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons'
-import { Item } from 'src/components'
+import { Item, RenderVoip } from 'src/components'
 import { NoticeBar, WhiteSpace, Modal } from 'antd-mobile'
 import './Profile.less'
 import { Fragment } from 'react'
@@ -16,6 +16,7 @@ import { friendService } from 'src/services'
 import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 import { validate } from 'src/utils'
 import { db } from 'src/api/indexDB'
+import { im } from 'src/api/IMDriver'
 
 const prompt = Modal.prompt
 const operation = Modal.operation
@@ -157,8 +158,30 @@ export default function Profile(props: RouteComponentProps) {
       <Item
         content={
           <div className="deep-blue" style={{ textAlign: 'center' }}>
-            <VideoCameraOutlined /> &nbsp;音视频通话
+            <VideoCameraOutlined /> &nbsp;语音通话
           </div>
+        }
+        onClick={
+          async () => {
+            const friendId = id
+            const isOnline = await im.checkConnect(friendId)
+            if (isOnline) {
+              getFriendInfo(friendId).then(({
+                nickname,
+                remark,
+                avatar
+              }) => {
+                RenderVoip('call', {
+                  remark,
+                  avatar,
+                  nickname,
+                  friendId
+                })
+              })
+            } else {
+              handleErrorMsg('远端用户已离线,无法建立通话!')
+            }
+          }
         }
       />
     </div>

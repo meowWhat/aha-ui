@@ -78,7 +78,13 @@ class IM {
             reslove(null)
           } else {
             /* 服务器已接收、但远端用户不可达的处理逻辑 */
-            reject('服务器已接收,但远端用户离线!')
+            this.client.sendMessageToPeer(
+              { text },
+              targetId,
+              { enableOfflineMessaging: true }
+            ).then(() => {
+              reslove(null)
+            }).catch(() => reject('消息发送失败,请检查网络环境!'))
           }
         })
         .catch((error) => {
@@ -92,13 +98,13 @@ class IM {
   /**
    * 检查 clinet 连接状态
    */
-  public checkConnect() {
+  public checkConnect(uid = this.uid) {
     return new Promise((reslove) => {
-      if (this.uid) {
+      if (uid) {
         this.client
-          .queryPeersOnlineStatus([this.uid])
+          .queryPeersOnlineStatus([uid])
           .then((res) => {
-            if (res[this.uid!] === true) {
+            if (res[uid] === true) {
               reslove(true)
             } else {
               reslove(false)

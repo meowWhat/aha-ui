@@ -5,6 +5,7 @@ import { DataBase, db } from 'src/api/indexDB'
 import { imState, IMState } from 'src/states/IMState'
 import { service } from 'src/utils'
 import dayjs from 'dayjs'
+import { im } from './IMDriver'
 
 export const addMsg = (
   msg: RtmMessage,
@@ -123,6 +124,7 @@ export const removeAll = async () => {
       reslove(true)
     }
   })
+  im.logout()
   if (!firstStep) {
     return false
   }

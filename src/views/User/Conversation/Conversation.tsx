@@ -25,7 +25,7 @@ import {
   getFriendIdByConvId,
   getFriendInfo,
 } from 'src/api/cacheApi'
-import { handleErrorMsg } from 'src/api/resHandle'
+import { handleErrorMsg, handleSuccessMsg } from 'src/api/resHandle'
 import { friendService } from 'src/services'
 
 const Item = Popover.Item
@@ -66,6 +66,27 @@ const Conversation = observer((props: ConversationProps) => {
       top: document.querySelector('.user-content')?.clientHeight,
       behavior: isAuto ? 'auto' : 'smooth',
     })
+  }
+  const callSomebody = async () => {
+    const friendId = getFriendIdByConvId(convId)
+    const isOnline = await im.checkConnect(friendId)
+    if (isOnline) {
+      getFriendInfo(friendId).then(({
+        nickname,
+        remark,
+        avatar
+      }) => {
+        RenderVoip('call', {
+          remark,
+          avatar,
+          nickname,
+          friendId
+        })
+      })
+    } else {
+      handleErrorMsg('远端用户已离线,无法建立通话!')
+    }
+
   }
   useEffect(() => {
     onLoad(friendName)
@@ -160,7 +181,7 @@ const Conversation = observer((props: ConversationProps) => {
       {/* 操作箱 */}
       <div className="conversation-operation bgc-deep-white">
         {/* 按住说话 */}
-        <AudioOutlined />
+        <AudioOutlined onClick={() => callSomebody()} />
         {/* 输入框 */}
         <textarea
           className="qwe"
@@ -235,33 +256,25 @@ const Conversation = observer((props: ConversationProps) => {
                 语音通话
               </Item>,
               <Item key="3" icon={<HistoryOutlined />}>
-                聊天记录
+                清除记录
               </Item>,
             ]}
             onSelect={(_, index) => {
               setPopoverVisible(false)
               switch (index) {
                 case 0:
-                  console.log('发送图片')
+                  handleSuccessMsg('功能在开发中,敬请期待!')
                   break
                 case 1:
-                  const friendId = getFriendIdByConvId(convId)
-                  getFriendInfo(friendId).then(({
-                    nickname,
-                    remark,
-                    avatar
-                  }) => {
-                    RenderVoip('call', {
-                      remark,
-                      avatar,
-                      nickname,
-                      friendId
-                    })
-                  })
-
+                  callSomebody()
                   break
                 case 2:
-                  console.log('聊天记录')
+                  db.deletConvItem(convId)
+                    .then(() => {
+                      handleSuccessMsg('删除消息记录成功')
+                      imState.updateConv()
+                    })
+                    .catch((err) => handleErrorMsg(err, '删除消息记录失败'))
                   break
                 default:
                   break
@@ -276,13 +289,20 @@ const Conversation = observer((props: ConversationProps) => {
           </Popover>
         )}
         {/* 表情包扩展 */}
-        <div
-          className={classNames('conversation-operation-emoji', {
-            hidden: isEmoji,
-          })}
-        >
-          <Emoji></Emoji>
-        </div>
+        {
+          !isEmoji
+            ? <div
+              className={classNames('conversation-operation-emoji', {
+                hidden: isEmoji,
+              })}
+            >
+              <Emoji onPick={(emoji) => {
+                setValue(value + emoji)
+                setIsInput(true)
+              }} />
+            </div>
+            : null
+        }
       </div>
 
     </div>
