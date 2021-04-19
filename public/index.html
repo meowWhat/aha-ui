@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aha - 免费在线聊天平台 - 内测开放</title>
+    <meta name="keywords" content="aha,在线聊天,多人社交,私密安全" />
+    <meta
+      name="description"
+      content="aha 是一款免费的在线聊天平台,支持用户进行文字,语音通讯,服务器不存储任何聊天信息,做到用户隐私极致保护!"
+    />
+    <link rel="manifest" href="mainfest.json" />
+    <script>
+      if (!window.Promise) {
+        document.writeln(
+          '<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"' +
+            '>' +
+            '<' +
+            '/' +
+            'script>',
+        )
+      }
+    </script>
+  </head>
 
-<head>
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
-  <title>aha - 免费在线聊天平台 - 内测开放</title>
-  <meta name="keywords" content="aha,在线聊天,多人社交,私密安全">
-  <meta name="description" content="aha 是一款免费的在线聊天平台,支持用户进行文字,语音通讯,服务器不存储任何聊天信息,做到用户隐私极致保护!">
-  <script>
-    if (!window.Promise) {
-      document.writeln(
-        '<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"' +
-        '>' +
-        '<' +
-        '/' +
-        'script>',
-      )
-    }
-  </script>
-</head>
-
-<body>
-  <div id="root"></div>
-</body>
-
+  <body>
+    <div id="root"></div>
+    <script>
+      window.addEventListener('load', () => {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('./sw.js')
+        }
+      })
+    </script>
+  </body>
 </html>

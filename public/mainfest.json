@@ -1,0 +1,22 @@
+{
+  "name": "AHA",
+  "short_name": "AHA",
+  "description": "aha - 免费在线聊天平台 - (内测中)",
+  "icons": [
+    {
+
+      "src": "https://z3.ax1x.com/2021/04/18/cImeKg.jpg",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "https://z3.ax1x.com/2021/04/18/cImE28.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "display": "fullscreen",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "start_url":"https://www.jiahao.site/"
+}
